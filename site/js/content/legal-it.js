@@ -191,4 +191,19 @@ export default [
 <ul><li>Contenuti illeciti gravi: internet-signalement.gouv.fr (PHAROS).</li><li>Cyberbullismo: 3018 (chiamata, chat o app, gratuito e anonimo).</li><li>Truffa o pirateria: 17cyber.gouv.fr e cybermalveillance.gouv.fr.</li><li>Pericolo immediato: 17 o 112.</li></ul>
 <h3>Avvertenza</h3>
 <p>Secondo la legge francese, presentare all’hosting un contenuto come illecito per ottenerne la rimozione sapendo che tale informazione è inesatta è punito con un anno di reclusione e 15.000 € di multa.</p>` },
+
+  { id: 'sources', title: "Fonti e crediti", updated: '2026-09-28', html: `
+<p>Jade si basa sul lavoro della community dell'aim training. Questa pagina indica da dove provengono i contenuti del sito e a chi appartengono i marchi citati.</p>
+<h3>Routine di allenamento</h3>
+<p>La scelta e l'ordine degli scenari, il numero di run e i codici playlist delle routine provengono dai documenti pubblici di <strong>Voltaic</strong>, community di allenamento della mira (voltaic.gg): routine fondamentali, per debolezza e per gioco, per Kovaak's e Aim Lab. La libreria di scenari segue la loro tabella di scenari consigliati (revisione 2024 di clover).</p>
+<ul><li>Routine Valorant esperta: bardOZ, per Voltaic.</li><li>Riscaldamento RAMP Valorant: minigodcs, per Voltaic.</li><li>Routine di switching veloce: Viscose e Christmasiscancelled.</li></ul>
+<p>Titoli, istruzioni e traduzioni sono scritti da Jade. Jade non è affiliato a Voltaic né approvato da Voltaic. Per richieste di correzione o rimozione: ${MAIL}.</p>
+<h3>Nomi degli scenari</h3>
+<p>Gli scenari appartengono ai rispettivi creatori. I loro nomi sono citati così come sono per poterli ritrovare in Kovaak's e Aim Lab.</p>
+<h3>Marchi</h3>
+<p>Counter-Strike 2 e Steam sono marchi di Valve Corporation; Valorant è un marchio di Riot Games; Kovaak's appartiene ai suoi editori; Aim Lab è un marchio di Statespace; FACEIT e Discord appartengono ai rispettivi titolari. Jade è un sito indipendente senza legami ufficiali con queste società.</p>
+<h3>Caratteri e risorse grafiche</h3>
+<p>Caratteri Chakra Petch e Manrope, con licenza SIL Open Font License 1.1, ospitati sul sito. Emblemi dei gradi, immagini delle casse, icone e cosmetici sono creati per Jade.</p>
+<h3>Informazioni pratiche</h3>
+<p>Le impostazioni di ottimizzazione si basano sulle opzioni ufficiali di Windows, dei driver NVIDIA e AMD e dei giochi. Le risorse di aiuto alle vittime della pagina Sicurezza sono servizi pubblici francesi (17cyber.gouv.fr, cybermalveillance.gouv.fr). I riferimenti di test e gradi sono calibrati da Jade e provvisori.</p>` },
 ];

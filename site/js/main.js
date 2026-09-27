@@ -65,7 +65,7 @@ function topHTML() {
     '</div></div></div>';
 }
 function footHTML() {
-  const docs = ['mentions', 'cgu', 'cgv', 'privacy', 'cookies', 'community', 'challenges', 'coins', 'accessibility', 'report'];
+  const docs = ['mentions', 'cgu', 'cgv', 'privacy', 'cookies', 'community', 'challenges', 'coins', 'accessibility', 'report', 'sources'];
   return '<div class="in"><div class="links">' + docs.map(d => '<a href="#/legal/' + d + '">' + esc(t('legal.short.' + d)) + '</a>').join('') +
     '<button class="link-btn" data-cookies>' + esc(t('cookie.reopen')) + '</button><button class="link-btn" data-replay>' + esc(t('intro.replay')) + '</button><span class="admin-hint" id="admDot" title="Ctrl + Shift + A">·</span></div>' +
     '<div class="bottom"><span>Jade<span class="dot">.</span> ' + esc(t('meta.tagline')) + ' · © ' + new Date().getFullYear() + '</span><span>' + esc(t('footer.independent')) + '</span></div></div>';

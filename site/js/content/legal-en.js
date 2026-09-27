@@ -191,4 +191,19 @@ export default [
 <ul><li>Serious illegal content: internet-signalement.gouv.fr (PHAROS).</li><li>Cyberbullying: 3018 (call, chat or app, free and anonymous).</li><li>Scam or hacking: 17cyber.gouv.fr and cybermalveillance.gouv.fr.</li><li>Immediate danger: 17 or 112.</li></ul>
 <h3>Warning</h3>
 <p>Under French law, presenting content to the host as illegal in order to have it removed while knowing this information to be inaccurate is punishable by one year's imprisonment and a €15,000 fine.</p>` },
+
+  { id: 'sources', title: "Sources and credits", updated: '2026-09-28', html: `
+<p>Jade builds on the work of the aim training community. This page explains where the site's content comes from and who owns the trademarks mentioned.</p>
+<h3>Training routines</h3>
+<p>The choice and order of scenarios, the number of runs and the playlist codes of the routines come from the public documents of <strong>Voltaic</strong>, an aim training community (voltaic.gg): fundamental, weakness-specific and game-specific routines for Kovaak's and Aim Lab. The scenario library follows their recommended scenarios sheet (2024 rework by clover).</p>
+<ul><li>Expert Valorant routine: bardOZ, for Voltaic.</li><li>Valorant RAMP warm-up: minigodcs, for Voltaic.</li><li>Speed switching routine: Viscose and Christmasiscancelled.</li></ul>
+<p>Titles, instructions and translations are written by Jade. Jade is not affiliated with or endorsed by Voltaic. For any correction or removal request: ${MAIL}.</p>
+<h3>Scenario names</h3>
+<p>Scenarios belong to their respective creators. Their names are quoted as they are so you can find them in Kovaak's and Aim Lab.</p>
+<h3>Trademarks</h3>
+<p>Counter-Strike 2 and Steam are trademarks of Valve Corporation; Valorant is a trademark of Riot Games; Kovaak's belongs to its publishers; Aim Lab is a trademark of Statespace; FACEIT and Discord belong to their respective owners. Jade is an independent site with no official link to these companies.</p>
+<h3>Fonts and graphics</h3>
+<p>Chakra Petch and Manrope fonts, under the SIL Open Font License 1.1, hosted on the site. Rank emblems, crate art, icons and cosmetics are made for Jade.</p>
+<h3>Practical information</h3>
+<p>Optimization settings rely on the official options of Windows, NVIDIA and AMD drivers and the games. The victim support resources on the Security page are French public services (17cyber.gouv.fr, cybermalveillance.gouv.fr). Test and rank benchmarks are calibrated by Jade and provisional.</p>` },
 ];

@@ -192,4 +192,19 @@ export default [
 <ul><li>Contenus illicites graves : internet-signalement.gouv.fr (PHAROS).</li><li>Cyberharcèlement : 3018 (appel, tchat ou application, gratuit et anonyme).</li><li>Arnaque ou piratage : 17cyber.gouv.fr et cybermalveillance.gouv.fr.</li><li>Danger immédiat : 17 ou 112.</li></ul>
 <h3>Attention</h3>
 <p>Présenter à l'hébergeur un contenu comme illicite dans le but d'en obtenir le retrait en sachant cette information inexacte est puni d'un an d'emprisonnement et de 15 000 € d'amende.</p>` },
+
+  { id: 'sources', title: "Sources et crédits", updated: '2026-09-28', html: `
+<p>Jade s'appuie sur le travail de la communauté de l'aim training. Cette page indique d'où viennent les contenus du site et à qui appartiennent les marques citées.</p>
+<h3>Routines d'entraînement</h3>
+<p>Le choix et l'ordre des scénarios, le nombre de runs et les codes de playlist des routines proviennent des documents publics de <strong>Voltaic</strong>, communauté d'entraînement à la visée (voltaic.gg) : routines fondamentales, routines par faiblesse et routines par jeu, pour Kovaak's et Aim Lab. La bibliothèque de scénarios reprend leur tableau de scénarios recommandés (refonte 2024 par clover).</p>
+<ul><li>Routine Valorant experte : bardOZ, pour Voltaic.</li><li>Échauffement RAMP Valorant : minigodcs, pour Voltaic.</li><li>Routine de switching rapide : Viscose et Christmasiscancelled.</li></ul>
+<p>Les titres, consignes et traductions sont rédigés par Jade. Jade n'est ni affilié à Voltaic ni approuvé par Voltaic. Pour toute demande de correction ou de retrait : ${MAIL}.</p>
+<h3>Noms de scénarios</h3>
+<p>Les scénarios appartiennent à leurs créateurs respectifs. Leurs noms sont cités tels quels pour qu'on puisse les retrouver dans Kovaak's et Aim Lab.</p>
+<h3>Marques</h3>
+<p>Counter-Strike 2 et Steam sont des marques de Valve Corporation ; Valorant est une marque de Riot Games ; Kovaak's appartient à ses éditeurs ; Aim Lab est une marque de Statespace ; FACEIT et Discord appartiennent à leurs détenteurs respectifs. Jade est un site indépendant, sans lien officiel avec ces sociétés.</p>
+<h3>Polices et ressources graphiques</h3>
+<p>Polices Chakra Petch et Manrope, sous licence SIL Open Font License 1.1, hébergées sur le site. Les emblèmes de rang, visuels de caisses, icônes et cosmétiques sont créés pour Jade.</p>
+<h3>Informations pratiques</h3>
+<p>Les réglages d'optimisation s'appuient sur les options officielles de Windows, des pilotes NVIDIA et AMD et des jeux. Les ressources d'aide aux victimes citées dans la page Sécurité sont celles des services publics français (17cyber.gouv.fr, cybermalveillance.gouv.fr). Les repères des tests et des rangs sont calibrés par Jade et provisoires.</p>` },
 ];

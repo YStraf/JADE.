@@ -191,4 +191,19 @@ export default [
 <ul><li>Schwerwiegende rechtswidrige Inhalte: internet-signalement.gouv.fr (PHAROS).</li><li>Cybermobbing: 3018 (Anruf, Chat oder App, kostenlos und anonym).</li><li>Betrug oder Hacking: 17cyber.gouv.fr und cybermalveillance.gouv.fr.</li><li>Akute Gefahr: 17 oder 112.</li></ul>
 <h3>Hinweis</h3>
 <p>Nach französischem Recht wird es mit einem Jahr Freiheitsstrafe und 15.000 € Geldstrafe bestraft, dem Hoster einen Inhalt als rechtswidrig darzustellen, um seine Entfernung zu erreichen, obwohl man weiß, dass diese Angabe falsch ist.</p>` },
+
+  { id: 'sources', title: "Quellen und Credits", updated: '2026-09-28', html: `
+<p>Jade baut auf der Arbeit der Aim-Training-Community auf. Diese Seite zeigt, woher die Inhalte stammen und wem die genannten Marken gehören.</p>
+<h3>Trainingsroutinen</h3>
+<p>Auswahl und Reihenfolge der Szenarien, Anzahl der Runs und Playlist-Codes der Routinen stammen aus den öffentlichen Dokumenten von <strong>Voltaic</strong>, einer Aim-Training-Community (voltaic.gg): Grundlagen-, Schwächen- und spielspezifische Routinen für Kovaak's und Aim Lab. Die Szenario-Bibliothek folgt ihrer Liste empfohlener Szenarien (Überarbeitung 2024 von clover).</p>
+<ul><li>Valorant-Expertenroutine: bardOZ, für Voltaic.</li><li>Valorant-RAMP-Aufwärmen: minigodcs, für Voltaic.</li><li>Routine für schnelles Switching: Viscose und Christmasiscancelled.</li></ul>
+<p>Titel, Anleitungen und Übersetzungen stammen von Jade. Jade ist weder mit Voltaic verbunden noch von Voltaic unterstützt. Für Korrektur- oder Löschanfragen: ${MAIL}.</p>
+<h3>Szenarionamen</h3>
+<p>Die Szenarien gehören ihren jeweiligen Erstellern. Ihre Namen werden unverändert genannt, damit man sie in Kovaak's und Aim Lab findet.</p>
+<h3>Marken</h3>
+<p>Counter-Strike 2 und Steam sind Marken der Valve Corporation; Valorant ist eine Marke von Riot Games; Kovaak's gehört seinen Herausgebern; Aim Lab ist eine Marke von Statespace; FACEIT und Discord gehören ihren Inhabern. Jade ist eine unabhängige Website ohne offizielle Verbindung zu diesen Unternehmen.</p>
+<h3>Schriftarten und Grafiken</h3>
+<p>Schriftarten Chakra Petch und Manrope unter der SIL Open Font License 1.1, auf der Website gehostet. Rangembleme, Kistengrafiken, Symbole und Kosmetik wurden für Jade erstellt.</p>
+<h3>Praktische Informationen</h3>
+<p>Die Optimierungstipps beruhen auf den offiziellen Optionen von Windows, den NVIDIA- und AMD-Treibern und den Spielen. Die Hilfsangebote für Opfer auf der Seite Sicherheit sind französische Behördendienste (17cyber.gouv.fr, cybermalveillance.gouv.fr). Die Referenzwerte für Tests und Ränge sind von Jade kalibriert und vorläufig.</p>` },
 ];

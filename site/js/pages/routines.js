@@ -18,7 +18,7 @@ function card(r, open) {
     : '<p class="muted small-note">' + ic('info') + esc(t(r.soft === 'aimlab' ? 'routine.aimlabHow' : 'routine.kvkHow')) + '</p>';
   return '<details class="routine" id="r-' + r.id + '"' + (open ? ' open' : '') + '><summary><div><h3>' + esc(routineTitle(r)) + '</h3><div class="tags"><span class="tag jade">' + esc(t('level.' + r.lvl)) + '</span><span class="tag">' + esc(t('game.' + r.game)) + '</span>' + r.types.map(x => '<span class="tag">' + esc(t('type.' + x)) + '</span>').join('') + '</div></div><div class="time">≈ ' + minutesOf(r) + '<small> min</small></div></summary>' +
     '<div class="body"><p class="rt-note">' + esc(t('rt.n.' + r.focus)) + '</p>' + src + '<ol class="blocks">' + r.blocks.map(b => '<li class="block"><span class="min">' + esc(blockQty(b)) + '</span><span class="scen">' + scenAlts(b).map(s => esc(s) + copyBtn(s)).join('<span class="or">' + esc(t('auth.or')) + '</span>') + '</span></li>').join('') + '</ol>' +
-    '<div class="row-flex" style="margin-top:14px"><button class="btn small primary" data-done="' + r.id + '">' + ic('check') + esc(t('routine.done')) + '</button><button class="btn small" data-copyall="' + r.id + '">' + ic('copy') + esc(t('routine.copyAll')) + '</button><span class="muted small-note">' + esc(softName(r.soft)) + ' · ' + esc(t('routine.source')) + '</span></div></div></details>';
+    '<div class="row-flex" style="margin-top:14px"><button class="btn small primary" data-done="' + r.id + '">' + ic('check') + esc(t('routine.done')) + '</button><button class="btn small" data-copyall="' + r.id + '">' + ic('copy') + esc(t('routine.copyAll')) + '</button><span class="muted small-note">' + esc(softName(r.soft)) + '</span></div></div></details>';
 }
 function library() {
   return '<details class="card lib"><summary><div><h3>' + ic('book') + esc(t('lib.title')) + '</h3><p class="muted">' + esc(t('lib.sub')) + '</p></div>' + ic('plus') + '</summary>' +
@@ -59,7 +59,7 @@ export default {
       '<select id="typeSel" class="compact" aria-label="' + esc(t('routine.type')) + '"><option value="all">' + esc(t('routine.allTypes')) + '</option>' + TYPES.map(x => '<option value="' + x + '">' + esc(t('type.' + x)) + '</option>').join('') + '</select>' +
       '<input type="search" id="rSearch" class="compact" placeholder="' + esc(t('routine.search')) + '" aria-label="' + esc(t('routine.search')) + '"></div>' +
       '<p class="muted small-note" id="rCount"></p><div class="routine-list" id="rList"></div>' + library() +
-      noteBox(esc(t('routine.sourceNote')), 'info');
+      noteBox(esc(t('routine.sourceNote')) + ' <a href="#/legal/sources">' + esc(t('legal.short.sources')) + '</a>', 'info');
   },
   mount(root, sub) {
     const openId = sub[0];

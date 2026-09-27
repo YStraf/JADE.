@@ -34,7 +34,7 @@ R.TYPES.forEach(k => add('type.' + k)); Object.keys(R.GOALS).forEach(k => add('g
 ['title', 'scen', 'scenAim', 'prize'].forEach(k => add('adm.ch.' + k)); add('adm.log.ban', 'adm.log.unban', 'adm.log.hide', 'adm.log.show');
 ['ok', 'pending', 'required', 'notreq'].forEach(k => add('challenge.v.' + k));
 ['weekly', 'challenge', 'replies', 'news'].forEach(k => add('notif.' + k, 'notif.' + k + '.sub')); ['tech', 'billing', 'content', 'scam', 'other'].forEach(k => add('support.s.' + k));
-['steam', 'faceit', 'google', 'riot'].forEach(k => add('sec.link.' + k)); ['mentions', 'cgu', 'cgv', 'privacy', 'cookies', 'community', 'challenges', 'coins', 'accessibility', 'report'].forEach(k => add('legal.short.' + k));
+['steam', 'faceit', 'google', 'riot'].forEach(k => add('sec.link.' + k)); ['mentions', 'cgu', 'cgv', 'privacy', 'cookies', 'community', 'challenges', 'coins', 'accessibility', 'report', 'sources'].forEach(k => add('legal.short.' + k));
 ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(k => add('day.' + k)); ['records', 'scen', 'skills', 'streak', 'badges', 'rank', 'plan'].forEach(k => add('wg.' + k)); ['zoom', 'x', 'y'].forEach(k => add('crop.' + k));
 ['challenge', 'session', 'streak', 'record', 'milestone'].forEach(k => add('earn.' + k, 'earn.' + k + '.how')); ['pages', 'routines', 'opti', 'security', 'legal', 'settings', 'tests'].forEach(k => add('search.g.' + k));
 ['pseudo', 'email', 'password', 'birth', 'age', 'terms', 'emailTaken', 'pseudoTaken', 'bad', 'banned'].forEach(k => add('auth.err.' + k)); ['planned', 'study', 'online', 'progress', 'notStarted'].forEach(k => add('app.' + k));
