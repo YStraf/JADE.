@@ -212,3 +212,20 @@ tbody tr:hover{background:var(--jade-soft)}
 .note-box svg{width:18px;height:18px;flex:none;color:var(--jade);margin-top:2px}
 .note-box.warn{border-color:color-mix(in srgb,var(--danger) 35%,transparent);background:var(--danger-soft);color:var(--text)}
 .note-box.warn svg{color:var(--danger)}
+
+/* Menus déroulants : icônes compactes et menu de compte */
+.menu svg{width:16px;height:16px;flex:none;color:var(--muted);transition:color .15s}
+.menu button:hover svg,.menu a:hover svg{color:var(--jade)}
+.menu .danger{color:var(--muted)}
+.menu .danger:hover{color:#ff6b6b;background:rgba(255,107,107,.1)}
+.menu .danger:hover svg{color:#ff6b6b}
+.acct-menu{min-width:250px;padding:6px}
+.acct-menu .menu-head{display:flex;align-items:center;gap:12px;padding:10px 11px;margin-bottom:4px;border-radius:10px;background:var(--card);text-decoration:none;color:var(--text)}
+.acct-menu .menu-head:hover{background:var(--jade-soft)}
+.acct-menu .mh-body{flex:1;min-width:0;display:grid;gap:4px}
+.acct-menu .mh-body b{font:700 15px var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acct-menu .mh-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
+.acct-menu .mh-coins{display:inline-flex;align-items:center;gap:4px;color:var(--text);font-weight:700}
+.acct-menu .mh-coins svg{width:13px;height:13px;color:#f5c542}
+.acct-menu .mh-bar{height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.acct-menu .mh-bar i{display:block;height:100%;background:var(--jade);border-radius:4px}

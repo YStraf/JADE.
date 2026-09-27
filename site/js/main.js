@@ -55,11 +55,11 @@ function topHTML() {
     '<button class="tool hide-sm' + (SFX.on ? '' : ' off') + '" data-sound aria-pressed="' + SFX.on + '" aria-label="' + esc(SFX.on ? t('sound.off') : t('sound.on')) + '">' + ic(SFX.on ? 'sound' : 'mute') + '</button>' +
     '<button class="tool" data-theme-toggle aria-label="' + esc(theme === 'light' ? t('theme.dark') : t('theme.light')) + '">' + ic(theme === 'light' ? 'moon' : 'sun') + '</button>' +
     '<div class="menu-wrap"><button class="acct' + (u ? '' : ' signed-out') + '" id="acctBtn" aria-haspopup="true" aria-expanded="false">' + (u ? avatar({ pseudo: u.pseudo, style: profile().style }, 28) + '<span class="hide-sm">' + esc(u.pseudo) + '</span>' : esc(t('auth.signin'))) + '</button>' +
-    '<div class="menu" id="acctMenu" role="menu">' + (u
-      ? '<div class="menu-head">' + avatar({ pseudo: u.pseudo, style: profile().style }, 34) + '<div><b>' + esc(u.pseudo) + '</b><small>' + esc(t('xp.level')) + ' ' + L.lvl + ' · ' + fmt(coins()) + ' coins</small></div></div><hr>' +
-        '<a href="#/profil">' + ic('user') + esc(t('nav.profile')) + '</a><a href="#/joueur/' + encodeURIComponent(u.pseudo) + '">' + ic('eye') + esc(t('profile.public')) + '</a><a href="#/profil/showcase">' + ic('brush') + esc(t('profile.tab.showcase')) + '</a><a href="#/shop/inventory">' + ic('crate') + esc(t('shop.tab.inventory')) + '</a>' +
+    '<div class="menu acct-menu" id="acctMenu" role="menu">' + (u
+      ? '<a class="menu-head" href="#/pass">' + avatar({ pseudo: u.pseudo, style: profile().style }, 40) + '<div class="mh-body"><b>' + esc(u.pseudo) + '</b><span class="mh-row"><span>' + esc(t('xp.level')) + ' ' + L.lvl + '</span><span class="mh-coins">' + ic('coin') + fmt(coins()) + '</span></span><span class="mh-bar"><i style="width:' + L.pct + '%"></i></span></div></a>' +
+        '<div class="menu-sec"><a href="#/profil">' + ic('user') + esc(t('nav.profile')) + '</a><a href="#/joueur/' + encodeURIComponent(u.pseudo) + '">' + ic('eye') + esc(t('profile.public')) + '</a><a href="#/profil/showcase">' + ic('brush') + esc(t('profile.tab.showcase')) + '</a><a href="#/shop/inventory">' + ic('crate') + esc(t('shop.tab.inventory')) + '</a></div>' +
         '<div class="show-sm-only"><hr><button data-lang-open>' + ic('globe') + esc(t('lang.label')) + '</button><button data-sound>' + ic(SFX.on ? 'sound' : 'mute') + esc(SFX.on ? t('sound.off') : t('sound.on')) + '</button></div>' +
-        '<hr><button data-logout>' + ic('logout') + esc(t('auth.logout')) + '</button>'
+        '<hr><button class="danger" data-logout>' + ic('logout') + esc(t('auth.logout')) + '</button>'
       : '<button data-auth="in">' + ic('user') + esc(t('auth.signin')) + '</button><button data-auth="up">' + ic('plus') + esc(t('auth.signup')) + '</button>' +
         '<div class="show-sm-only"><hr><button data-lang-open>' + ic('globe') + esc(t('lang.label')) + '</button><button data-sound>' + ic(SFX.on ? 'sound' : 'mute') + esc(SFX.on ? t('sound.off') : t('sound.on')) + '</button></div>') +
     '</div></div></div>';
