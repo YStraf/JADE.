@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jade — aim training CS2 et Valorant</title>
+<meta name="description" content="Jade : routines Kovaak's et Aim Lab pour CS2 et Valorant, tests d'aim, rangs, optimisation PC, suivi de progression, défis hebdomadaires et forum.">
+<meta name="theme-color" content="#0B0F0D">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jade">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Jade — vise mieux, progresse pour de vrai">
+<meta property="og:description" content="Routines Kovaak's et Aim Lab, tests d'aim, rangs, optimisation CS2 et Valorant, défis chaque semaine.">
+<meta property="og:image" content="/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Jade","inLanguage":"fr","description":"Aim training pour CS2 et Valorant : routines, tests, rangs, optimisation et défis."}</script>
+<script>
+// Thème appliqué avant le rendu pour éviter tout flash.
+try{var th=JSON.parse(localStorage.getItem('jade:theme')||'"dark"');document.documentElement.setAttribute('data-theme',th||'dark');if(JSON.parse(localStorage.getItem('jade:anims')||'true')===false)document.documentElement.classList.add('no-anim')}catch(e){document.documentElement.setAttribute('data-theme','dark')}
+</script>
+<link rel="preload" href="assets/fonts/manrope-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/cosmetics.css">
+<link rel="stylesheet" href="css/pages.css">
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+<a class="sr" href="#view">Aller au contenu</a>
+<div id="intro" class="hidden" role="dialog" aria-label="Jade">
+  <canvas id="introCanvas" aria-hidden="true"></canvas>
+  <div class="i-scrim"></div>
+  <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+  <div class="inner">
+    <pre class="term" id="term" aria-hidden="true"></pre>
+    <div class="word" id="introWord"></div>
+    <p class="sub" id="introSub"></p>
+    <div class="enter"><button class="btn primary" id="enterBtn"></button></div>
+  </div>
+  <button class="skip" id="skipBtn"></button>
+</div>
+<div class="shell">
+  <aside class="side" id="side" aria-label="Navigation"></aside>
+  <div class="scrim"></div>
+  <div class="main-col">
+    <header class="top" id="top"></header>
+    <div id="announce" class="announce-slot"></div>
+    <main class="view" id="view" tabindex="-1"></main>
+    <footer class="foot" id="foot"></footer>
+  </div>
+</div>
+<div class="mini" id="miniProfile" role="tooltip"></div>
+<div class="pops" id="pops" aria-live="polite"></div>
+<div class="toast" id="toast" role="status"></div>
+<div class="cookie" id="cookieBar" role="dialog" aria-label="Cookies"></div>
+<noscript><p style="padding:24px;font-family:sans-serif">Jade a besoin de JavaScript pour fonctionner.</p></noscript>
+</body>
+</html>

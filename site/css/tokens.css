@@ -1,0 +1,38 @@
+/* Palettes. Sombre par défaut ; clair ; « sombre alternatif » (palier 15) ; « Jade exclusif » (palier 80). */
+:root{
+  --bg:#0B0F0D; --bg2:#101612; --card:#141A16; --card2:#18201b; --line:#1F2A24; --line2:#2B3931;
+  --text:#F4F7F5; --muted:#8FA398; --faint:#5d6d64;
+  --jade:#2EE88A; --jade-deep:#0E7A45; --on-jade:#06301B; --jade-soft:rgba(46,232,138,.10); --jade-glow:rgba(46,232,138,.28);
+  --danger:#FF5C6C; --danger-soft:rgba(255,92,108,.12);
+  --blue:#5AC8FF; --violet:#B48CFF; --amber:#FFC46B; --pink:#ff7ab6;
+  --common:#9aa5a0; --rare:#5aa8ff; --epic:#a377ff; --legend:#e8b93f;
+  --display:"Chakra Petch",ui-sans-serif,system-ui,sans-serif;
+  --body:"Manrope",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --r-sm:9px; --r:14px; --r-lg:20px;
+  --side:248px; --top:62px;
+  --shadow:0 24px 60px -36px rgba(0,0,0,.9);
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#FFFFFF; --bg2:#F6F9F7; --card:#EEF3F0; --card2:#e7eee9; --line:#DDE6E0; --line2:#C9D6CE;
+  --text:#0F1411; --muted:#5E6E64; --faint:#8b9a91;
+  --jade:#00A862; --jade-deep:#064E32; --on-jade:#FFFFFF; --jade-soft:rgba(0,168,98,.09); --jade-glow:rgba(0,168,98,.22);
+  --danger:#D6334A; --danger-soft:rgba(214,51,74,.08);
+  --blue:#0C7FB8; --violet:#7A4FD6; --amber:#B97A10; --pink:#c73e80;
+  --common:#6f7b75; --rare:#1f7fd6; --epic:#7a4fd6; --legend:#b98a10;
+  --shadow:0 24px 50px -34px rgba(20,40,30,.35);
+  color-scheme:light;
+}
+:root[data-theme="contrast"]{
+  --bg:#000000; --bg2:#07090a; --card:#0e1211; --card2:#131816; --line:#26302b; --line2:#3a4a42;
+  --text:#FFFFFF; --muted:#b3c2ba; --faint:#7d8c84;
+  --jade:#46ffa0; --on-jade:#002613; --jade-soft:rgba(70,255,160,.12);
+}
+:root[data-theme="jade"]{
+  --bg:#04140d; --bg2:#071d13; --card:#0b2519; --card2:#0e2c1e; --line:#12382a; --line2:#1b4a37;
+  --text:#eafff4; --muted:#8fc2a6; --faint:#5e8d74;
+  --jade:#5dffb0; --jade-deep:#1fae6a; --on-jade:#013a1f; --jade-soft:rgba(93,255,176,.12); --jade-glow:rgba(93,255,176,.35);
+  --amber:#ffd27a;
+}
