@@ -58,7 +58,7 @@ mise en avant « best »), comparatif (13 lignes `PLAN_ROWS`), FAQ paiement (5 q
 ### User Story 4 - Actus (Priority: P2)
 
 Page Actus : segment CS2 / Valorant ; rangées « Résultats esport » (score, vainqueur surligné, stats),
-« Patch notes », « Veille et sécurité » (alertes avec « Réflexe »), étiquette « mise en page d'exemple »
+« Patch notes » (la veille arnaques est déplacée dans la page Sécurité, filtrable par jeu, avec « Réflexe »), étiquette « mise en page d'exemple »
 tant que le contenu est fictif.
 
 ---

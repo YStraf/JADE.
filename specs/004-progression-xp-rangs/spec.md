@@ -91,7 +91,7 @@ Onglet « Niveau et XP » : carte de niveau (niveau, XP totale, barre, « X / Y 
 
 ### User Story 5 - Rang compétitif (Priority: P2)
 
-Le rang (Fer → Jade, 10 paliers) est calculé sur les performances : 70 % score d'aim (moyenne
+Le rang (Fer → Jade, 12 rangs, divisions III/II/I sur les 10 premiers) est calculé sur les performances : 70 % score d'aim (moyenne
 normalisée des records, au moins 3 tests sur 5) + 30 % assiduité (séances sur 30 jours et série).
 L'XP n'entre pas dans le calcul.
 
@@ -119,9 +119,9 @@ L'XP n'entre pas dans le calcul.
 - **FR-005**: Les records de test DOIVENT être validés côté serveur (bornes de plausibilité par test) et ne remplacer le record que s'ils sont meilleurs.
 - **FR-006**: L'import CSV DOIT être parsé côté client (fichiers jamais envoyés bruts) puis soumis en lot au serveur qui déduplique par nom de fichier et valide dates/scores.
 - **FR-007**: Le système DOIT calculer série de jours consécutifs, grille des 7 derniers jours (lettres D L M M J V S), delta de score moyen 7 j vs 7 j précédents, et répartition par compétence (Flick/clicking, Tracking, Précision, Switching, Réaction, Autres) selon les mots-clés `SKILLS`.
-- **FR-008**: Le rang DOIT être calculé côté serveur : `aim = moyenne(norm(test))` sur ≥ 3 tests avec les repères `REFS` (flick 12↔30 s, précision 18↔45 s, réaction 180↔400 ms, tracking 85↔30 %, switching 14↔35 s) ; `assiduité = min(100, séances30j/20×100)×0,6 + min(100, série/14×100)×0,4` ; `points = round((aim×0,7 + assiduité×0,3)×10)` ; seuils `RANKS` (Fer 0, Bronze 150, Argent 280, Or 420, Platine 550, Diamant 680, Élite 790, Maître 880, Grand Maître 940, Jade 980).
+- **FR-008**: Le rang DOIT être calculé côté serveur : `aim = moyenne(norm(test))` sur ≥ 3 tests avec les repères `REFS` (flick 12↔30 s, précision 18↔45 s, réaction 180↔400 ms, tracking 85↔30 %, switching 14↔35 s) ; `assiduité = min(100, séances30j/20×100)×0,6 + min(100, série/14×100)×0,4` ; `points = round((aim×0,7 + assiduité×0,3)×10)` ; seuils `RANKS` (Fer 0, Bronze 100, Argent 200, Or 300, Platine 400, Diamant 500, Améthyste 600, Obsidienne 690, Maître 770, Grand Maître 850, Mythique 920, Jade 970) ; les 10 premiers rangs sont découpés en trois divisions (III, II, I). Un **rang par compétence** est aussi calculé avec les mêmes seuils sur `norm(test)×10`. Les résultats de test hors bornes de plausibilité (`TEST_BOUNDS` : flick ≥ 4 s, précision ≥ 5 s, réaction ≥ 100 ms, tracking ≤ 100 %, switching ≥ 4 s) DOIVENT être rejetés.
 - **FR-009**: Les badges DOIVENT être évalués côté serveur selon les critères `BADGES`.
-- **FR-010**: Le pass de progression DOIT afficher les 10 paliers `TIERS` et octroyer automatiquement les récompenses cosmétiques implémentées.
+- **FR-010**: Le pass de progression DOIT afficher les 10 paliers `TIERS` et octroyer automatiquement leurs récompenses, toutes implémentées : niv. 5 cadre bronze, 10 couleur de pseudo, 15 thème sombre alternatif (contraste), 20 badge Régulier, 30 cadre argent + emote forum « HS », 40 fonds de vitrine (5 ambiances), 50 cadre or + 4 titres au choix, 65 accès bêta de l'application, 80 thème Jade exclusif, 100 cadre Jade animé + titre Vétéran.
 - **FR-011**: Les « pops » XP et niveau DOIVENT être déclenchés par la réponse serveur (pas par le client seul).
 - **FR-012**: Les 5 moteurs de test DOIVENT reproduire à l'identique règles, tailles et pénalités du prototype, avec HUD (compteur, chrono) et overlay de résultat.
 

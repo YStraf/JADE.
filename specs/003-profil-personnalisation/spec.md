@@ -116,7 +116,7 @@ définitivement mon compte.
 - **FR-003**: L'avatar DOIT être importable (image ≤ 4 Mo, redimensionnée à 320 px) avec zoom 100-320 % et position X/Y 0-100 % ; stocké dans un espace de fichiers dont seul le propriétaire peut écrire le dossier.
 - **FR-004**: La bannière DOIT être choisie parmi les bannières de base + possédées ; l'import d'une image de bannière (zoom 100-300 %, X/Y) est réservé aux administrateurs en v1.
 - **FR-005**: Le serveur DOIT refuser toute bannière, tout contour ou tout titre de collection non possédé.
-- **FR-006**: Le titre affiché [NEEDS CLARIFICATION: le prototype autorise un titre libre de 26 caractères pour tous, alors que le Pass (niveau 50 « titre au choix ») et la Caisse Mixte vendent des titres — faut-il (a) garder le titre libre pour tous, (b) le réserver au niveau 50, ou (c) n'autoriser que les titres obtenus ?]
+- **FR-006**: Le titre affiché DOIT être choisi parmi les titres **possédés** (Pass niveau 50 et 100, Caisse Mixte, secrets). Aucun titre libre pour les membres : seul un administrateur (rôle serveur) peut saisir un titre personnalisé (40 caractères max), qui remplace alors le titre débloqué. *(Décision du porteur de projet, 2026-09-27.)*
 - **FR-007**: La vitrine DOIT afficher les encarts choisis dans l'ordre de `WIDGETS`.
 - **FR-008**: La page publique `/joueur/<pseudo>` DOIT respecter « Profil visible » et « Afficher mes scores », être rendue côté serveur avec métadonnées OG.
 - **FR-009**: Le mini-profil DOIT s'afficher au survol de tout élément auteur (`<PlayerName/>`) sur tout le site, positionné sans sortir de l'écran, et charger ses données en < 300 ms (cache).

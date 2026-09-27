@@ -1,5 +1,11 @@
 # Jade — feuille de route spec-kit
 
+> **État au 2026-09-27** : en attendant la reconstruction Next.js + Supabase décrite ici, le site
+> en ligne est la version statique de [`site/`](../site/) (servie par Vercel). Elle implémente
+> toutes les specs côté navigateur (localStorage) et sert de maquette fonctionnelle de référence :
+> 12 rangs + rangs par compétence, pass complet (10 paliers réels), panel admin (dont don de
+> Jade Coins), documents légaux français complets, 6 langues intégrales.
+
 Reconstruction du prototype `prototype/index.html` (HTML/JS vanilla + localStorage) en
 **Next.js (React) + Tailwind + Supabase**. Brief d'origine : [`docs/PROMPT_REBUILD_JADE.md`](../docs/PROMPT_REBUILD_JADE.md).
 Principes non négociables : [`.specify/memory/constitution.md`](../.specify/memory/constitution.md).
@@ -68,8 +74,7 @@ Hooks React demandés : `useXP()`, `useRank()`, `useBadges()` (004), `useCoins()
 
 ## Décisions à prendre (marqueurs `[NEEDS CLARIFICATION]`)
 
-1. **003 / FR-006 — Titre affiché** : libre pour tous (prototype), réservé au niveau 50 (Pass), ou
-   uniquement les titres obtenus (caisses/secrets) ?
+1. ~~**003 / FR-006 — Titre affiché**~~ — **tranché** : uniquement les titres débloqués ; titre personnalisé réservé à l'administrateur.
 2. **005 / US4 — Bonus Premium** : un abonnement payant qui donne des coins ou une caisse
    aléatoire ressemble à une loot box payante. Recommandation : le remplacer par un cosmétique
    mensuel exclusif **non aléatoire**.
