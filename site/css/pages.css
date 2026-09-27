@@ -483,3 +483,11 @@ body.intro-on{overflow:hidden}
 .grid>.card,.grid-2>.card,.challenge-grid>.card,.band>.card,.grid-2>div>.card:first-child{margin-top:0}
 #rSearch,#fSearch{min-width:240px}
 .filters input[type=search]{flex:1;max-width:340px}
+
+/* Mobile : les colonnes de grille ne doivent jamais s'élargir au contenu */
+.tabs-layout>*,.import>*,.split>*{min-width:0}
+@media (max-width:900px){
+  .opti .vnav #oCats{display:flex;gap:2px}
+  .dropzone{padding:20px 14px}
+  .dropzone .row-flex .btn{flex:1 1 180px}
+}
