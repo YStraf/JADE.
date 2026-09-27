@@ -4,7 +4,7 @@ import { t, C } from '../core/i18n.js';
 import { ic } from '../core/icons.js';
 import { openModal } from '../core/modal.js';
 import { go } from '../core/router.js';
-import { ROUTINES } from '../data/routines.js';
+import { ROUTINES, routineTitle } from '../data/routines.js';
 import { OPTI } from '../data/opti.js';
 import { FICHES } from '../data/security.js';
 
@@ -13,8 +13,7 @@ function buildIndex() {
   const idx = [];
   const pages = [['', 'home', 'nav.home'], ['routines', 'routine', 'nav.routines'], ['tests', 'target', 'nav.tests'], ['progression', 'chart', 'nav.progression'], ['optimisation', 'sliders', 'nav.optimisation'], ['defis', 'trophy', 'nav.challenges'], ['rangs', 'rank', 'nav.ranks'], ['pass', 'ticket', 'nav.pass'], ['forum', 'chat', 'nav.forum'], ['shop', 'bag', 'nav.shop'], ['actus', 'news', 'nav.news'], ['securite', 'shield', 'nav.security'], ['formules', 'card', 'nav.pricing'], ['application', 'device', 'nav.app'], ['profil', 'user', 'nav.profile'], ['legal', 'scale', 'nav.legal']];
   pages.forEach(([r, i, k]) => idx.push({ g: 'search.g.pages', icon: i, title: t(k), sub: t(k + '.desc'), to: r }));
-  const R = C('routines');
-  ROUTINES.forEach(r => { const tr = R[r.id] || {}; idx.push({ g: 'search.g.routines', icon: 'routine', title: tr.title || r.id, sub: r.soft + ' · ' + r.blocks.map(b => b[1]).join(', '), to: 'routines/' + r.id }); });
+  ROUTINES.forEach(r => idx.push({ g: 'search.g.routines', icon: 'routine', title: routineTitle(r), sub: (r.soft === 'aimlab' ? 'Aim Lab' : "Kovaak's") + ' · ' + r.blocks.map(b => b[1]).join(', '), to: 'routines/' + r.id }));
   const O = C('opti');
   OPTI.forEach(cat => cat.tips.forEach(tip => { const x = O.tips[tip.id] || {}; idx.push({ g: 'search.g.opti', icon: cat.icon, title: x.t || tip.id, sub: (O.cats[cat.id] || {}).name + ' · ' + (x.w || ''), to: 'optimisation/' + cat.id + '/' + tip.id }); }));
   const S = C('security');

@@ -15,6 +15,7 @@ const add = (...ks) => ks.forEach(k => used.add(k));
 ['train', 'compete', 'community', 'info'].forEach(k => add('nav.g.' + k));
 Object.keys(G.TESTS).forEach(k => ['name', 'short', 'desc', 'hint'].forEach(s => add('test.' + k + '.' + s)));
 G.RANKS.forEach(r => add('rank.' + r.id));
+R.ROUTINES.forEach(r => { add('rt.f.' + r.focus, 'rt.n.' + r.focus); if (r.v) add('rt.v.' + r.v); }); Object.keys(R.SCEN_LIB).forEach(k => add('lib.' + k));
 G.TIERS.forEach(tr => add('tier.' + tr.key + '.name', 'tier.' + tr.key + '.desc'));
 G.ITEMS.forEach(i => add('item.' + i.type + '.' + i.key));
 ['common', 'rare', 'epic', 'legend', 'base', 'tier', 'secret'].forEach(r => add('rarity.' + r));

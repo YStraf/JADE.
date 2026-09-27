@@ -491,3 +491,15 @@ body.intro-on{overflow:hidden}
   .dropzone{padding:20px 14px}
   .dropzone .row-flex .btn{flex:1 1 180px}
 }
+
+/* Routines Voltaic : code de playlist, alternatives, bibliothèque */
+.routine .rt-note{color:var(--muted);margin:0 0 12px}
+.pl-code{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:12px 14px;border:1px dashed var(--line2);border-radius:var(--r);background:var(--bg2);margin-bottom:14px}
+.pl-code code{font:700 13px ui-monospace,monospace;color:var(--jade);word-break:break-all}
+.pl-code small{flex-basis:100%}
+.routine .scen .or{margin:0 8px;color:var(--muted);font-size:12px;text-transform:uppercase}
+.lib{margin-top:18px}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:16px}
+.lib-cat h4{margin:0 0 8px}
+.lib-cat ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:13.5px}
+.lib-cat li{display:flex;align-items:center;justify-content:space-between;gap:6px}
