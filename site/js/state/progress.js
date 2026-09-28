@@ -5,7 +5,7 @@ import { dayKey } from '../core/dom.js';
 import { pop } from '../core/toast.js';
 import { SFX } from '../core/sfx.js';
 import { t } from '../core/i18n.js';
-import { XP_RULES, COIN_RULES, levelFromXP, TESTS, norm, rankOf, BADGES, TIERS, TEST_BOUNDS } from '../data/game.js';
+import { XP_RULES, COIN_RULES, levelFromXP, TESTS, norm, rankOf, BADGES, TIERS, TEST_BOUNDS, TESTS_V } from '../data/game.js';
 import { addCoins, inventory } from './economy.js';
 import { profile } from './account.js';
 import { myPostsCount, myChallengeCount } from './community.js';
@@ -108,7 +108,13 @@ export async function importFiles(files) {
 }
 
 // ---- Records des tests ----
-export function bests() { return us.get('bests', {}); }
+// Les tests v1 étaient plus faciles : leurs records sont archivés (bests_v1) et ne comptent plus pour le rang.
+export function bestsFor(id) {
+  const get = (k, d) => (id ? us.getFor(id, k, d) : us.get(k, d)), set = (k, v) => (id ? us.setFor(id, k, v) : us.set(k, v));
+  if (get('testsV', 1) !== TESTS_V) { const old = get('bests', {}); if (Object.keys(old).length) { set('bests_v1', old); set('testsReset', true); } set('bests', {}); set('testsV', TESTS_V); }
+  return get('bests', {});
+}
+export function bests() { return bestsFor(); }
 export function bestOf(k) { const b = bests()[k]; return b == null ? null : b; }
 export function submitTest(k, val) {
   const b = bests(); const prev = b[k]; const cfg = TESTS[k];

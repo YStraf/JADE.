@@ -16,7 +16,8 @@ log('route après inscription', await page.evaluate(() => location.hash));
 // Test flick rapide : on clique 20 fois la cible
 await page.goto(BASE + '#/tests/flick'); await page.waitForTimeout(300);
 await page.click('#tStart');
-for (let i = 0; i < 20; i++) { await page.waitForTimeout(260); await page.locator('.dot-target').first().dispatchEvent('pointerdown'); }
+await page.waitForTimeout(2200);
+for (let i = 0; i < 30; i++) { await page.waitForTimeout(200); await page.locator('.dot-target').first().dispatchEvent('pointerdown'); }
 await page.waitForTimeout(300);
 log('résultat test', (await page.textContent('#tOv')).slice(0, 60));
 log('XP après test', await page.evaluate(() => JSON.parse(localStorage.getItem('jade:u:' + JSON.parse(localStorage.getItem('jade:current')) + ':xp')).total));

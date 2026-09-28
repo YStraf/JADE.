@@ -3,6 +3,8 @@ import { $, esc } from '../core/dom.js';
 import { t, fmt } from '../core/i18n.js';
 import { ic } from '../core/icons.js';
 import { SFX } from '../core/sfx.js';
+import { us } from '../core/store.js';
+import { toast } from '../core/toast.js';
 import { TESTS, norm, rankOf } from '../data/game.js';
 import { bests, submitTest } from '../state/progress.js';
 import { me } from '../state/account.js';
@@ -26,18 +28,31 @@ function pick(root, k) {
   $('#tHint', root).textContent = k ? t('test.' + k + '.hint') : '';
   $('#tStart', root).style.display = k ? '' : 'none';
   const ov = $('#tOv', root);
-  ov.innerHTML = k ? '<div><div class="big">' + esc(t('test.' + k + '.name')) + '</div><p class="muted" style="margin:8px 0 16px">' + esc(t('test.' + k + '.hint')) + '</p><button class="btn primary" data-start>' + esc(t('test.start')) + '</button></div>' : '<div><p class="muted">' + esc(t('test.select')) + '</p></div>';
+  ov.innerHTML = k ? '<button type="button" class="ov-start" data-start><span class="big">' + esc(t('test.' + k + '.name')) + '</span><span class="muted">' + esc(t('test.' + k + '.short')) + '</span><span class="press">' + ic('play') + esc(t('test.clickStart')) + '</span></button>' : '<div><p class="muted">' + esc(t('test.select')) + '</p></div>';
   ov.style.display = 'grid';
 }
 function stop() { if (engine) { engine(); engine = null; } }
+// Petit viseur façon CS2 qui remplace le curseur dans la zone de test (souris uniquement).
+function crosshair(arena) {
+  const x = document.createElement('span'); x.className = 'xhair'; x.setAttribute('aria-hidden', 'true'); x.innerHTML = '<i></i><i></i><i></i><i></i><b></b>'; arena.appendChild(x);
+  arena.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; const r = arena.getBoundingClientRect(); x.style.transform = 'translate(' + (e.clientX - r.left) + 'px,' + (e.clientY - r.top) + 'px)'; arena.classList.add('aiming'); });
+  arena.addEventListener('pointerleave', () => arena.classList.remove('aiming'));
+}
 function end(root, k, val, extra) {
   const res = submitTest(k, val); grid(root);
   const n = norm(k, val); const r = n == null ? null : rankOf(Math.round(n * 10));
   const ov = $('#tOv', root);
-  ov.innerHTML = '<div><div class="big">' + fmtVal(k, val) + '</div><div class="ov-stats">' + (extra || '') + (r ? '<div>' + emblem(r.index, { size: 34 }) + '<span class="muted">' + esc(rankLabel(r)) + '</span></div>' : '') + '</div>' + (res.invalid ? '<p class="inline-note" style="color:var(--danger)">' + esc(t('test.invalid')) + '</p>' : res.better ? '<p class="rec">' + esc(t('test.newRecord')) + '</p>' : '') + (!me() ? '<p class="inline-note">' + esc(t('test.guest')) + '</p>' : '') + '<button class="btn primary" data-start>' + esc(t('test.again')) + '</button></div>';
+  ov.innerHTML = '<div><div class="big">' + fmtVal(k, val) + '</div><div class="ov-stats">' + (extra || '') + (r ? '<div>' + emblem(r.index, { size: 34 }) + '<span class="muted">' + esc(rankLabel(r)) + '</span></div>' : '') + '</div>' + (res.invalid ? '<p class="inline-note" style="color:var(--danger)">' + esc(t('test.invalid')) + '</p>' : res.better ? '<p class="rec">' + esc(t('test.newRecord')) + '</p>' : '') + (!me() ? '<p class="inline-note">' + esc(t('test.guest')) + '</p>' : '') + '<button class="btn primary" data-start>' + ic('play') + esc(t('test.again')) + '</button></div>';
   ov.style.display = 'grid'; if (res.better) SFX.enter();
 }
-function start(root) {
+// Compte à rebours 3-2-1 dans la zone, puis lancement.
+function countdown(root) {
+  const k = cur; if (!k) return; stop();
+  const ov = $('#tOv', root); let n = 3, to = 0;
+  const tick = () => { if (n === 0) { engine = null; run(root); return; } ov.innerHTML = '<div class="count">' + n + '</div>'; n--; to = setTimeout(tick, 650); };
+  engine = () => clearTimeout(to); ov.style.display = 'grid'; tick();
+}
+function run(root) {
   const k = cur; if (!k) return; stop();
   const arena = $('#tArena', root), ov = $('#tOv', root), A = $('#tA', root), B = $('#tB', root);
   ov.style.display = 'none'; arena.querySelectorAll('.dot-target').forEach(e => e.remove());
@@ -65,9 +80,9 @@ function start(root) {
     on(arena, 'pointerdown', e => { if (!b && !e.target.classList.contains('dot-target')) { B.textContent = t('test.early'); tos.forEach(clearTimeout); tos = []; next(); } });
     next();
   } else if (k === 'tracking') {
-    const size = cfg.size, dur = cfg.dur, b = dot(size); let onT = false, onTime = 0, last = performance.now(); const t0 = last; let x = W() / 2, y = H() / 2, ang = Math.random() * 6.28; const speed = W() / 2200;
+    const size = cfg.size, dur = cfg.dur, b = dot(size); let onT = false, onTime = 0, last = performance.now(); const t0 = last; let x = W() / 2, y = H() / 2, ang = Math.random() * 6.28; const speed = W() * cfg.speed;
     on(b, 'pointerenter', () => onT = true); on(b, 'pointerleave', () => onT = false); on(arena, 'pointerleave', () => onT = false);
-    (function tick(now) { if (stopped) return; const dt = now - last; last = now; ang += (Math.random() - .5) * .12; x += Math.cos(ang) * speed * dt; y += Math.sin(ang) * speed * dt * .6;
+    (function tick(now) { if (stopped) return; const dt = now - last; last = now; ang += (Math.random() - .5) * cfg.turn; x += Math.cos(ang) * speed * dt; y += Math.sin(ang) * speed * dt * .6;
       if (x < size / 2) { x = size / 2; ang = Math.PI - ang; } if (x > W() - size / 2) { x = W() - size / 2; ang = Math.PI - ang; } if (y < size / 2 + 20) { y = size / 2 + 20; ang = -ang; } if (y > H() - size / 2) { y = H() - size / 2; ang = -ang; }
       b.style.left = x + 'px'; b.style.top = y + 'px'; if (onT) onTime += dt; const el = now - t0;
       A.textContent = Math.max(0, (dur - el) / 1000).toFixed(1) + ' s'; B.textContent = (onTime / Math.max(el, 1) * 100).toFixed(0) + ' %';
@@ -89,15 +104,16 @@ export default {
   render() {
     return pageHead(esc(t('nav.tests')), esc(t('tests.sub')), '<a class="btn small" href="#/rangs">' + ic('rank') + esc(t('tests.seeRanks')) + '</a>') +
       '<div class="test-grid" id="tGrid"></div>' +
-      '<div class="test-stage"><div><div class="arena test-arena" id="tArena" aria-label="' + esc(t('tests.zone')) + '"><div class="hud"><span id="tA">—</span><span id="tB">—</span></div><div class="overlay" id="tOv"></div></div><p class="muted small-note" id="tHint"></p></div>' +
-      '<div class="card"><h3 id="tTitle"></h3><p class="muted" id="tDesc" style="margin-top:6px"></p><button class="btn primary" id="tStart" style="margin-top:14px">' + ic('play') + esc(t('test.start')) + '</button>' +
-      '<hr class="sep"><h4 style="margin-bottom:8px">' + esc(t('test.records')) + '</h4><div class="rec-list" id="tRecords"></div><p class="inline-note">' + esc(t('tests.rankNote')) + '</p></div></div>';
+      '<div class="test-stage big-stage"><div class="arena test-arena" id="tArena" aria-label="' + esc(t('tests.zone')) + '"><div class="hud"><span id="tA">—</span><span id="tB">—</span></div><div class="overlay" id="tOv"></div></div>' +
+      '<div class="test-info"><div class="card"><h3 id="tTitle"></h3><p class="muted" id="tDesc" style="margin-top:6px"></p><p class="muted small-note" id="tHint" style="margin-top:6px"></p><button class="btn primary" id="tStart" style="margin-top:14px">' + ic('play') + esc(t('test.start')) + '</button></div>' +
+      '<div class="card"><h4 style="margin-bottom:8px">' + esc(t('test.records')) + '</h4><div class="rec-list" id="tRecords"></div><p class="inline-note">' + esc(t('tests.rankNote')) + '</p></div></div></div>';
   },
   mount(root, sub) {
-    cur = TESTS[sub[0]] ? sub[0] : null; pick(root, cur);
+    cur = TESTS[sub[0]] ? sub[0] : null; pick(root, cur); crosshair($('#tArena', root));
+    if (us.get('testsReset', false)) { us.set('testsReset', false); toast(t('test.reset')); }
     root.addEventListener('click', e => {
       const c = e.target.closest('[data-test]'); if (c) { pick(root, c.dataset.test); return; }
-      if (e.target.closest('[data-start]') || e.target.closest('#tStart')) start(root);
+      if (e.target.closest('[data-start]') || e.target.closest('#tStart')) { if (e.target.closest('#tStart')) $('#tArena', root).scrollIntoView({ block: 'center', behavior: 'smooth' }); countdown(root); }
     });
   },
   unmount() { stop(); },
