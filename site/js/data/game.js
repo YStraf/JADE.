@@ -118,6 +118,9 @@ export const ITEMS = [
   I('title', 'tryhard', 'rare', 'crate'), I('banner', 'circuit', 'rare', 'crate'), I('title', 'tracker', 'rare', 'crate'),
   I('title', 'localleg', 'epic', 'crate'), I('banner', 'holo', 'epic', 'crate', { anim: true }), I('title', 'flickgod', 'epic', 'crate'),
   I('frame', 'mystery', 'legend', 'crate', { anim: true }), I('title', 'untouchable', 'legend', 'crate'),
+  // Jade+ (actifs pendant l'abonnement) et pack Fondateur (achat unique, à vie)
+  I('frame', 'plus', 'plus', 'plus', { anim: true }), I('banner', 'plus', 'plus', 'plus', { anim: true }), I('title', 'plus', 'plus', 'plus'),
+  I('frame', 'founder', 'founder', 'founder', { anim: true }), I('banner', 'founder', 'founder', 'founder', { anim: true }), I('title', 'founder', 'founder', 'founder'),
   // Secrets
   I('banner', 'darkmatter', 'secret', 'secret', { anim: true }), I('frame', 'darkmatter', 'secret', 'secret'), I('title', 'darkmatter', 'secret', 'secret'),
   I('banner', 'sakura', 'secret', 'secret', { anim: true }), I('frame', 'sakura', 'secret', 'secret'), I('title', 'sakura', 'secret', 'secret'),

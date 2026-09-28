@@ -1,18 +1,18 @@
 // Documentos legales — traducción al español (la versión francesa es la que da fe).
 const TODO = s => '<span class="todo">' + s + '</span>';
-const EDITOR = TODO('nombre del editor o razón social');
+const EDITOR = 'wStraf';
 const MAIL = TODO('dirección de correo de contacto');
 export default [
-  { id: 'mentions', title: 'Aviso legal', updated: '2026-09-27', html: `
+  { id: 'mentions', title: 'Aviso legal', updated: '2026-09-28', html: `
 <p>De conformidad con el artículo 6 III de la ley francesa n.º 2004-575, de 21 de junio de 2004, para la confianza en la economía digital (LCEN), esta es la información sobre el editor y el alojador del sitio Jade.</p>
 <h3>Editor</h3>
-<p>El sitio Jade está editado por ${EDITOR}, ${TODO('forma jurídica (empresario individual, SAS…)')}, ${TODO('capital social si procede')}, con domicilio social en ${TODO('dirección postal')}.</p>
-<ul><li>Inscripción: ${TODO('RCS / RNE y número SIREN')}</li><li>Número de IVA intracomunitario: ${TODO('si procede')}</li><li>Contacto: ${MAIL} — ${TODO('número de teléfono')}</li></ul>
-<p>Si el editor es un particular que actúa a título no profesional, puede, conforme al artículo 6 III 2 de la LCEN, hacer público únicamente el nombre del alojador, siempre que le haya comunicado sus datos de identificación.</p>
+<p>El sitio Jade es editado por ${EDITOR}, persona física que actúa a título no profesional durante la fase de preparación del sitio. Conforme al artículo 6 III 2 de la LCEN, sus datos de identificación se han comunicado al proveedor de alojamiento.</p>
+<ul><li>Contacto: ${MAIL}</li></ul>
+<p>Antes de la apertura de las ofertas de pago, la actividad pasa a ser comercial: la identidad completa del editor (nombre, estatuto, dirección, número SIREN, teléfono) se publicará en esta página, como exige el artículo 6 III 1 de la LCEN.</p>
 <h3>Director de la publicación</h3>
-<p>${TODO('nombre del director de la publicación')}.</p>
+<p>${EDITOR}.</p>
 <h3>Alojamiento</h3>
-<p>El sitio está alojado por Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, Estados Unidos — vercel.com. Cuando se abran las cuentas en línea, los datos de las cuentas se almacenarán en ${TODO('nombre del proveedor de base de datos')}, dentro de la Unión Europea.</p>
+<p>El sitio está alojado por Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, Estados Unidos — vercel.com. Cuando se abran las cuentas en línea, los datos de las cuentas se almacenarán en Supabase Inc. (970 Toa Payoh North #07-04, Singapur 318992 — supabase.com), en servidores situados en la Unión Europea.</p>
 <h3>Propiedad intelectual</h3>
 <p>Los textos, rutinas, ilustraciones, emblemas, elementos gráficos y el código de Jade están protegidos por el Código de la Propiedad Intelectual francés y pertenecen al editor salvo indicación en contrario. Queda prohibida cualquier reproducción o reutilización sin autorización.</p>
 <p>Counter-Strike 2, Valorant, Kovaak's, Aim Lab, FACEIT, Steam y Discord son marcas de sus respectivos titulares. Jade es un sitio independiente sin vínculo oficial con Valve, Riot Games, Kovaak's, Statespace, FACEIT ni Discord. Los nombres de los escenarios de entrenamiento se citan a título informativo para poder encontrarlos en el software correspondiente.</p>
@@ -45,35 +45,34 @@ export default [
 <h3>12. Ley aplicable y litigios</h3>
 <p>Estas condiciones se rigen por el derecho francés. En caso de litigio, se busca primero una solución amistosa (contacto: ${MAIL}). Si eres consumidor, puedes recurrir gratuitamente al mediador de consumo indicado en las Condiciones de venta. En su defecto, son competentes los tribunales franceses, sin perjuicio de las normas protectoras aplicables a los consumidores.</p>` },
 
-  { id: 'cgv', title: 'Condiciones generales de venta', updated: '2026-09-27', html: `
-<p><strong>Importante: los pagos aún no están activos.</strong> Estas condiciones se aplicarán cuando se abran las ofertas de pago. Regulan las ventas entre el editor y un consumidor.</p>
+  { id: 'cgv', title: 'Condiciones generales de venta', updated: '2026-09-28', html: `
+<p><strong>Importante: los pagos aún no están activos.</strong> Estas condiciones se aplicarán en cuanto se abran las ofertas de pago. Se refieren a las ventas entre el editor (el vendedor, identificado en el aviso legal) y un consumidor. La versión francesa es la que da fe.</p>
 <h3>1. Ofertas</h3>
-<ul><li><strong>Gratis</strong>: acceso básico, sin límite de tiempo.</li><li><strong>Programa</strong>: programa de entrenamiento de 8 semanas, pago único, acceso de por vida al contenido comprado.</li><li><strong>Premium</strong>: suscripción mensual sin permanencia.</li></ul>
-<p>Las características esenciales de cada oferta se presentan en la página Planes, de conformidad con el artículo L111-1 del Código de Consumo francés.</p>
+<ul><li><strong>Gratis</strong>: todo el entrenamiento (rutinas, tests, rangos, pase, cajas, optimización, foro, desafíos), sin límite de tiempo.</li><li><strong>Jade+</strong>: suscripción que da acceso al análisis de puntos débiles y a las rutinas recomendadas, a un escaparate de 24 widgets con el widget Galería, al banner personalizado, a los cosméticos Jade+ (marco, banner, título) y a la insignia Jade+, además de soporte prioritario. Mensual (4,99 €) o anual (39,99 €).</li><li><strong>Pack Fundador</strong>: compra única (14,99 €) que incluye marco, banner y título Fundador para siempre y 3 meses de Jade+ sin renovación. Disponible hasta el lanzamiento de la app.</li></ul>
+<p>Las características esenciales de cada oferta se muestran en la página Jade+ y se recuerdan antes del pago. Ninguna oferta contiene Jade Coins ni cajas: nunca se venden.</p>
 <h3>2. Precios</h3>
-<p>Los precios se indican en euros, impuestos incluidos (artículo L112-1 del Código de Consumo). Ninguna suscripción ni compra da Jade Coins.</p>
+<p>Los precios se indican en euros, impuestos incluidos. El precio de una suscripción no puede subir sin avisarte al menos un mes antes, con la posibilidad de cancelar.</p>
 <h3>3. Pedido</h3>
-<p>Antes de confirmar, ves un resumen de tu pedido y su precio total. El botón de confirmación indica «Pedido con obligación de pago» o una fórmula equivalente (artículo L221-14). Se te envía una confirmación por correo en un soporte duradero.</p>
+<p>Se necesita una cuenta Jade. Antes de confirmar, ves el resumen de la oferta y su precio total, aceptas estas condiciones y solicitas el acceso inmediato al contenido. El botón de confirmación indica «Pagar» seguido del importe. Recibes una confirmación por email.</p>
 <h3>4. Pago</h3>
-<p>El pago lo gestiona ${TODO('nombre del proveedor de pago autorizado')}. Jade nunca tiene acceso a los datos de tu tarjeta.</p>
-<h3>5. Duración, renovación y cancelación de la suscripción</h3>
-<ul><li>La suscripción Premium es mensual y se renueva automáticamente.</li><li>Puedes cancelarla en cualquier momento, en línea, mediante la función de cancelación disponible en la pestaña Suscripción de tu perfil (artículo L215-1-1 del Código de Consumo, «cancelación en tres clics»). Se te envía un acuse de recibo.</li><li>La cancelación surte efecto al final del periodo ya pagado.</li></ul>
+<p>El pago se realiza con tarjeta y lo procesa Stripe Payments Europe, Ltd. (Irlanda), proveedor de pagos autorizado con certificación PCI-DSS. Jade nunca tiene acceso a los datos de tu tarjeta. La suscripción se cobra al inicio de cada periodo.</p>
+<h3>5. Duración, renovación y cancelación</h3>
+<ul><li>Jade+ se contrata por un mes o un año y se renueva automáticamente por el mismo periodo.</li><li>En la modalidad anual, se te informa por email, como pronto tres meses y como tarde un mes antes del vencimiento, de que puedes no renovar.</li><li>Puedes cancelar en cualquier momento en línea desde la pestaña Suscripción de tu perfil. Se te envía un acuse de recibo. La cancelación surte efecto al final del periodo en curso, ya pagado.</li><li>Al terminar la suscripción, las funciones Jade+ se ocultan; tu progreso, tus objetos y tu escaparate se conservan.</li></ul>
 <h3>6. Derecho de desistimiento</h3>
-<p>Dispones de 14 días desde la celebración del contrato para desistir, sin necesidad de justificarlo (artículo L221-18). Para ello, escribe a ${MAIL} o utiliza el formulario tipo de desistimiento.</p>
-<p>Excepciones: para un contenido digital no suministrado en soporte material (Programa), el derecho de desistimiento ya no puede ejercerse una vez iniciada la ejecución con tu consentimiento previo y expreso y tu renuncia expresa a este derecho (artículo L221-28, 13.º). Para un servicio (Premium) cuya ejecución solicitas antes del final del plazo, debes un importe proporcional al servicio prestado hasta tu desistimiento (artículo L221-25).</p>
+<p>En principio dispones de 14 días para desistir, sin justificación. Sin embargo, Jade+ y el pack Fundador proporcionan contenidos digitales desde el pago: al hacer el pedido, solicitas expresamente ese acceso inmediato y reconoces perder tu derecho de desistimiento en cuanto empieza el acceso. Para la parte de servicio de la suscripción, si el desistimiento sigue siendo posible, debes un importe proporcional al servicio prestado. Si hay algún problema, escribe a ${MAIL}.</p>
 <h3>7. Garantía legal de conformidad</h3>
-<p>Los contenidos y servicios digitales se benefician de la garantía legal de conformidad de los artículos L224-25-12 y siguientes del Código de Consumo: puesta en conformidad o, en su defecto, reducción del precio o resolución del contrato. Para un suministro continuo (suscripción), la garantía cubre todo el periodo de suministro; para un suministro único (Programa), los defectos que aparezcan en un plazo de dos años.</p>
+<p>Los contenidos y servicios digitales gozan de la garantía legal de conformidad: puesta en conformidad o, en su defecto, reducción del precio o resolución del contrato. Para la suscripción, la garantía cubre todo el periodo de suministro; para el pack Fundador, los defectos que aparezcan en un plazo de dos años.</p>
 <h3>8. Atención al cliente</h3>
-<p>${MAIL}. Respuesta en 48 horas laborables de media.</p>
+<p>${MAIL}. Respuesta en 48 horas laborables de media, con prioridad para los miembros Jade+.</p>
 <h3>9. Mediación de consumo</h3>
-<p>De conformidad con el artículo L612-1 del Código de Consumo, si un litigio no se resuelve con el servicio de atención al cliente, puedes recurrir gratuitamente al mediador de consumo: ${TODO('nombre, sitio web y dirección del mediador')}.</p>
+<p>Si un litigio no se resuelve con la atención al cliente, puedes recurrir gratuitamente al mediador de consumo: ${TODO('nombre, sitio web y dirección del mediador')}.</p>
 <h3>10. Ley aplicable</h3>
 <p>Estas condiciones se rigen por el derecho francés, sin perjuicio de las disposiciones más protectoras de tu país de residencia.</p>` },
 
-  { id: 'privacy', title: 'Política de privacidad', updated: '2026-09-27', html: `
+  { id: 'privacy', title: 'Política de privacidad', updated: '2026-09-28', html: `
 <p>Esta política explica qué datos trata Jade, para qué y cuáles son tus derechos, de conformidad con el Reglamento (UE) 2016/679 (RGPD) y la ley francesa n.º 78-17, de 6 de enero de 1978 (Informática y Libertades).</p>
 <h3>Responsable del tratamiento</h3>
-<p>${EDITOR}, contactable en ${MAIL}. ${TODO('Datos del delegado de protección de datos, si se ha designado')}.</p>
+<p>${EDITOR}, contactable en ${MAIL}. No se ha designado delegado de protección de datos; no es obligatorio para Jade.</p>
 <h3>Situación actual</h3>
 <p>En su versión actual, Jade funciona sin servidor de cuentas: tu cuenta, tu progreso, tus Jade Coins, tu inventario y tus sesiones se guardan <strong>únicamente en el almacenamiento local de tu navegador</strong>. El editor no tiene acceso a ellos. Los puntos siguientes describen también el funcionamiento previsto cuando se abran las cuentas en línea; esta política se actualizará entonces.</p>
 <h3>Datos tratados, finalidades y bases legales</h3>
@@ -87,11 +86,11 @@ export default [
 <li><strong>Medición de audiencia</strong>: desactivada por defecto, solo con tu consentimiento (ver la política de cookies).</li>
 </ul>
 <h3>Destinatarios</h3>
-<p>Los datos están destinados al editor y a sus encargados técnicos: alojamiento del sitio (Vercel Inc.) y, cuando las cuentas estén en línea, ${TODO('proveedor de base de datos y de correo')}. Las fuentes tipográficas del sitio están alojadas en el propio sitio: no se envía ninguna solicitud a un servicio de fuentes externo. Ningún dato se vende ni se usa con fines publicitarios.</p>
+<p>Los datos están destinados al editor y a sus encargados técnicos: alojamiento del sitio (Vercel Inc.) y, cuando las cuentas estén en línea, Supabase Inc. (base de datos, autenticación y emails de inicio de sesión, servidores en la Unión Europea) y Stripe Payments Europe, Ltd. (pagos, Irlanda). Las fuentes tipográficas del sitio están alojadas en el propio sitio: no se envía ninguna solicitud a un servicio de fuentes externo. Ningún dato se vende ni se usa con fines publicitarios.</p>
 <h3>Transferencias fuera de la Unión Europea</h3>
 <p>El alojador del sitio está establecido en Estados Unidos. Las posibles transferencias están cubiertas por el Marco de Privacidad de Datos UE–EE. UU. o por las cláusulas contractuales tipo de la Comisión Europea.</p>
 <h3>Plazos de conservación</h3>
-<ul><li>Datos de la cuenta y de entrenamiento: mientras exista la cuenta y luego se eliminan en un plazo de 30 días.</li><li>Mensajes del foro: se eliminan o anonimizan al eliminar la cuenta.</li><li>Datos de conexión: 1 año (obligación legal).</li><li>Mensajes de soporte: 3 años después del último intercambio.</li><li>Elecciones sobre cookies: 6 meses.</li></ul>
+<ul><li>Datos de la cuenta y de entrenamiento: mientras exista la cuenta y luego se eliminan en un plazo de 30 días.</li><li>Mensajes del foro: se eliminan o anonimizan al eliminar la cuenta.</li><li>Datos de conexión: 1 año (obligación legal).</li><li>Mensajes de soporte: 3 años después del último intercambio.</li><li>Elecciones sobre cookies: 6 meses.</li><li>Facturas y documentos contables de las compras: 10 años (artículo L123-22 del Código de Comercio francés).</li></ul>
 <h3>Decisiones automatizadas</h3>
 <p>El nivel, el rango y las insignias se calculan automáticamente a partir de tus resultados. Este cálculo no produce ningún efecto jurídico ni consecuencia significativa en el sentido del artículo 22 del RGPD.</p>
 <h3>Menores</h3>
@@ -202,6 +201,10 @@ export default [
 <p>Los escenarios pertenecen a sus creadores. Sus nombres se citan tal cual para poder encontrarlos en Kovaak's y Aim Lab.</p>
 <h3>Marcas</h3>
 <p>Counter-Strike 2 y Steam son marcas de Valve Corporation; Valorant es una marca de Riot Games; Kovaak's pertenece a sus editores; Aim Lab es una marca de Statespace; FACEIT y Discord pertenecen a sus titulares. Jade es un sitio independiente sin vínculo oficial con estas empresas.</p>
+<h3>Skins de CS2</h3>
+<p>La lista de skins del widget Colección procede de la API libre <strong>CSGO-API</strong> de ByMykel (licencia MIT). Las imágenes de los skins las sirve Steam y pertenecen a Valve Corporation.</p>
+<h3>Fundadores</h3>
+<p>Gracias a los jugadores que apoyan a Jade con el pack Fundador. Sus apodos aparecerán aquí en cuanto se abran los pagos.</p>
 <h3>Tipografías y recursos gráficos</h3>
 <p>Tipografías Chakra Petch y Manrope, con licencia SIL Open Font License 1.1, alojadas en el sitio. Los emblemas de rango, las imágenes de cajas, los iconos y los cosméticos están creados para Jade.</p>
 <h3>Información práctica</h3>

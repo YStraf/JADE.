@@ -14,6 +14,7 @@ import { coins, addCoins, addItem, removeItem, inventory, settings, saveSettings
 import { adminGrantXP, setTotalXP, xpData } from '../state/progress.js';
 import { posts, savePosts, reports, saveReports, challenge, saveChallenge } from '../state/community.js';
 import { pageHead, avatar, itemPreview, itemName, rarityLabel } from '../components/ui.js';
+import { isPlus, grantPlus, endPlus } from '../state/premium.js';
 
 const TABS = [['dash', 'grid'], ['users', 'users'], ['economy', 'coin'], ['items', 'crate'], ['brand', 'brush'], ['forum', 'chat'], ['challenge', 'trophy'], ['content', 'megaphone'], ['tickets', 'headset'], ['logs', 'log'], ['settings', 'settings']];
 let tab = 'dash', tries = 0, lockUntil = 0;
@@ -44,7 +45,7 @@ function body() {
       accs.map(a => { const x = us.getFor(a.id, 'xp', { total: 0 }).total; const pr = profile(a.id); return '<tr data-row="' + esc(a.pseudo.toLowerCase() + ' ' + a.email) + '"><td><div class="row-flex" style="gap:10px;flex-wrap:nowrap">' + avatar({ pseudo: a.pseudo, style: pr.style }, 32) + '<div><b>' + esc(a.pseudo) + '</b>' + (me() && a.id === me().id ? ' <span class="tag jade">' + esc(t('common.you')) + '</span>' : '') + (a.banned ? ' <span class="tag danger">' + esc(t('adm.banned')) + '</span>' : '') + '<div class="muted small-note">' + esc(a.email) + '</div></div></div></td>' +
         '<td><select class="compact" data-role="' + a.id + '">' + ROLES.map(r => '<option value="' + r + '"' + ((a.role || 'member') === r ? ' selected' : '') + '>' + esc(t('role.' + r)) + '</option>').join('') + '</select></td>' +
         '<td><b>' + levelFromXP(x).lvl + '</b><div class="muted small-note">' + fmt(x) + ' XP</div></td><td><b>' + fmt(coinsOf(a.id)) + '</b></td>' +
-        '<td><div class="row-flex" style="gap:6px"><button class="btn tiny" data-give="' + a.id + '">' + ic('plus') + 'XP / coins</button><button class="btn tiny ' + (a.banned ? 'primary' : 'danger') + '" data-ban="' + a.id + '">' + esc(a.banned ? t('adm.unban') : t('adm.ban')) + '</button>' + (me() && a.id === me().id ? '' : '<button class="btn tiny danger" data-deluser="' + a.id + '">' + ic('trash') + '</button>') + '</div></td></tr>'; }).join('') +
+        '<td><div class="row-flex" style="gap:6px"><button class="btn tiny' + (isPlus(a.id) ? ' primary' : '') + '" data-plus="' + a.id + '" title="' + esc(t(isPlus(a.id) ? 'adm.plusOff' : 'adm.plusOn')) + '">Jade+</button><button class="btn tiny" data-give="' + a.id + '">' + ic('plus') + 'XP / coins</button><button class="btn tiny ' + (a.banned ? 'primary' : 'danger') + '" data-ban="' + a.id + '">' + esc(a.banned ? t('adm.unban') : t('adm.ban')) + '</button>' + (me() && a.id === me().id ? '' : '<button class="btn tiny danger" data-deluser="' + a.id + '">' + ic('trash') + '</button>') + '</div></td></tr>'; }).join('') +
       DEMO_PLAYERS.map(d => '<tr data-row="' + esc(d.pseudo.toLowerCase()) + '" class="demo-row"><td><div class="row-flex" style="gap:10px;flex-wrap:nowrap">' + avatar(d, 32) + '<div><b>' + esc(d.pseudo) + '</b> <span class="tag outline">' + esc(t('common.demo')) + '</span></div></div></td><td>' + esc(t('role.member')) + '</td><td><b>' + levelFromXP(d.xp).lvl + '</b></td><td>—</td><td class="muted small-note">' + esc(t('adm.demoRow')) + '</td></tr>').join('') +
       '</tbody></table></div><p class="inline-note">' + esc(t('adm.rolesNote')) + '</p></div>';
   }
@@ -93,7 +94,7 @@ function body() {
   }
   if (tab === 'tickets') {
     const l = store.get('tickets', []);
-    return '<div class="card"><h3>' + esc(t('adm.tab.tickets')) + '</h3>' + (l.length ? l.map(x => '<div class="ticket"><div class="row-flex" style="justify-content:space-between"><b>' + esc(t('support.s.' + x.subject)) + ' · ' + esc(x.by) + '</b><span class="muted small-note">' + fmtDateTime(x.t) + '</span></div><p class="muted" style="margin:6px 0 10px">' + esc(x.msg) + '</p><div class="row-flex"><span class="badge ' + (x.status === 'open' ? '' : 'ok') + '">' + esc(t('adm.st.' + x.status)) + '</span>' + (x.status === 'open' ? '<button class="btn tiny" data-closeticket="' + x.id + '">' + esc(t('adm.closeTicket')) + '</button>' : '') + '</div></div>').join('') : '<p class="muted">' + esc(t('adm.noTickets')) + '</p>') + '</div>';
+    return '<div class="card"><h3>' + esc(t('adm.tab.tickets')) + '</h3>' + (l.length ? [...l].sort((a, b) => (b.plus && b.status === 'open') - (a.plus && a.status === 'open')).map(x => '<div class="ticket"><div class="row-flex" style="justify-content:space-between"><b>' + esc(t('support.s.' + x.subject)) + ' · ' + esc(x.by) + '</b>' + (x.plus ? ' <span class="tag plus-tag">' + esc(t('support.priority')) + '</span>' : '') + '<span class="muted small-note">' + fmtDateTime(x.t) + '</span></div><p class="muted" style="margin:6px 0 10px">' + esc(x.msg) + '</p><div class="row-flex"><span class="badge ' + (x.status === 'open' ? '' : 'ok') + '">' + esc(t('adm.st.' + x.status)) + '</span>' + (x.status === 'open' ? '<button class="btn tiny" data-closeticket="' + x.id + '">' + esc(t('adm.closeTicket')) + '</button>' : '') + '</div></div>').join('') : '<p class="muted">' + esc(t('adm.noTickets')) + '</p>') + '</div>';
   }
   if (tab === 'logs') {
     const l = store.get('admlogs', []);
@@ -175,6 +176,7 @@ export default {
     });
     root.addEventListener('change', e => {
       if (!isAdminSession()) return;
+      const pl = e.target.closest('[data-plus]'); if (pl) { const a = accounts().find(x => x.id === pl.dataset.plus); if (isPlus(a.id)) { endPlus(a.id); admLog(t('adm.log.plusOff', { p: a.pseudo })); } else { grantPlus(30, 'admin', 'plus_m', a.id); admLog(t('adm.log.plusOn', { p: a.pseudo })); } paint(root); toast(t('adm.applied')); return; }
       const rl = e.target.closest('[data-role]'); if (rl) { const a = accounts().find(x => x.id === rl.dataset.role); updateAccount({ role: rl.value }, a.id); admLog(t('adm.log.role', { p: a.pseudo, r: t('role.' + rl.value) })); toast(t('adm.applied')); return; }
       if (e.target.id === 'crateMult') { const s = settings(); s.crateMult = +e.target.value; saveSettings(s); admLog(t('adm.log.crateMult', { m: e.target.value })); return; }
       if (e.target.id === 'bFileAv') readImage(e.target.files[0], 400, u => { const p = profile(); p.style.avatarImg = u; saveProfile(p); admLog(t('adm.log.avatar')); paint(root); });

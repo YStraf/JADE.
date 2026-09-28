@@ -1,12 +1,13 @@
 // Vitrine : grille invisible de 4 colonnes, widgets à tailles imposées (comme sur iPhone).
 // Tailles : s (petit), m (moyen), l (grand) + étendues : v (vertical) ou h (horizontal).
-export const COLS = 4, ROWS = 12, MAXW = 16;
+export const COLS = 4, ROWS = 18;
 export const SIZES = { s: [1, 1], sv: [1, 2], m: [2, 1], mh: [4, 1], l: [2, 2], lv: [2, 3], lh: [4, 2] };
 export const SHORT = { s: 'S', sv: 'S ↕', m: 'M', mh: 'M ↔', l: 'L', lv: 'L ↕', lh: 'L ↔' };
 export const SIZE_GROUPS = [['s', 'sv'], ['m', 'mh'], ['l', 'lv', 'lh']];
 const ALL = Object.keys(SIZES), NOS = ALL.filter(s => s !== 's'), WIDE = ['m', 'mh', 'l', 'lv', 'lh'];
 
 // cat : games (trackers), jade (stats du site), perso (personnalisation). stats : masqué si l'utilisateur cache ses scores.
+// plus : réservé à Jade+.
 export const WTYPES = {
   cs2: { cat: 'games', icon: 'target', sizes: ALL, def: 'm', cfg: true, stats: true },
   faceit: { cat: 'games', icon: 'trophy', sizes: ALL, def: 'm', cfg: true, stats: true },
@@ -22,6 +23,7 @@ export const WTYPES = {
   gif: { cat: 'perso', icon: 'sparkles', sizes: ALL, def: 'm', cfg: true },
   clip: { cat: 'perso', icon: 'play', sizes: WIDE, def: 'l', cfg: true },
   collection: { cat: 'perso', icon: 'crate', sizes: WIDE, def: 'mh', cfg: true },
+  gallery: { cat: 'perso', icon: 'grid', sizes: WIDE, def: 'l', cfg: true, plus: true },
   text: { cat: 'perso', icon: 'edit', sizes: ALL, def: 'm', cfg: true },
   setup: { cat: 'perso', icon: 'mouse', sizes: NOS, def: 'sv', cfg: true },
 };

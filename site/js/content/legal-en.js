@@ -1,18 +1,18 @@
 // Legal documents — English translation (the French version is authoritative).
 const TODO = s => '<span class="todo">' + s + '</span>';
-const EDITOR = TODO("publisher's name or company name");
+const EDITOR = 'wStraf';
 const MAIL = TODO('contact email address');
 export default [
-  { id: 'mentions', title: 'Legal notice', updated: '2026-09-27', html: `
+  { id: 'mentions', title: 'Legal notice', updated: '2026-09-28', html: `
 <p>In accordance with article 6 III of French law no. 2004-575 of 21 June 2004 on confidence in the digital economy (LCEN), here is the information about the publisher and host of the Jade website.</p>
 <h3>Publisher</h3>
-<p>The Jade website is published by ${EDITOR}, ${TODO('legal form (sole trader, SAS…)')}, ${TODO('share capital if applicable')}, whose registered office is located at ${TODO('postal address')}.</p>
-<ul><li>Registration: ${TODO('RCS / RNE and SIREN number')}</li><li>EU VAT number: ${TODO('if applicable')}</li><li>Contact: ${MAIL} — ${TODO('phone number')}</li></ul>
-<p>If the publisher is a private individual acting in a non-professional capacity, they may, under article 6 III 2 of the LCEN, only make the host's name public, provided they have given their identification details to the host.</p>
+<p>The Jade website is published by ${EDITOR}, a private individual acting in a non-professional capacity while the site is being prepared. Under article 6 III 2 of the LCEN, their identification details have been given to the host.</p>
+<ul><li>Contact: ${MAIL}</li></ul>
+<p>Before paid offers open, the activity becomes commercial: the publisher's full identity (name, status, address, SIREN number, phone) will be published on this page, as required by article 6 III 1 of the LCEN.</p>
 <h3>Publication director</h3>
-<p>${TODO('name of the publication director')}.</p>
+<p>${EDITOR}.</p>
 <h3>Hosting</h3>
-<p>The site is hosted by Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, United States — vercel.com. When online accounts open, account data will be stored with ${TODO('database provider name')}, within the European Union.</p>
+<p>The site is hosted by Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, United States — vercel.com. When online accounts open, account data will be stored with Supabase Inc. (970 Toa Payoh North #07-04, Singapore 318992 — supabase.com), on servers located in the European Union.</p>
 <h3>Intellectual property</h3>
 <p>The texts, routines, illustrations, emblems, graphic elements and code of Jade are protected by the French Intellectual Property Code and belong to the publisher unless stated otherwise. Any reproduction or reuse without permission is prohibited.</p>
 <p>Counter-Strike 2, Valorant, Kovaak's, Aim Lab, FACEIT, Steam and Discord are trademarks of their respective owners. Jade is an independent site with no official link to Valve, Riot Games, Kovaak's, Statespace, FACEIT or Discord. Training scenario names are cited for information so that they can be found in the relevant software.</p>
@@ -45,35 +45,34 @@ export default [
 <h3>12. Applicable law and disputes</h3>
 <p>These terms are governed by French law. In case of dispute, an amicable solution is sought first (contact: ${MAIL}). If you are a consumer, you may use the consumer mediator named in the Terms of sale free of charge. Otherwise, French courts have jurisdiction, without prejudice to the protective rules applicable to consumers.</p>` },
 
-  { id: 'cgv', title: 'Terms of sale', updated: '2026-09-27', html: `
-<p><strong>Important: payments are not active yet.</strong> These terms will apply once paid offers open. They cover sales between the publisher and a consumer.</p>
+  { id: 'cgv', title: 'Terms of sale', updated: '2026-09-28', html: `
+<p><strong>Important: payments are not active yet.</strong> These terms will apply once paid offers open. They cover sales between the publisher (the seller, identified in the legal notice) and a consumer. The French version is authoritative.</p>
 <h3>1. Offers</h3>
-<ul><li><strong>Free</strong>: basic access, with no time limit.</li><li><strong>Program</strong>: 8-week training program, one-time purchase, lifetime access to the purchased content.</li><li><strong>Premium</strong>: monthly subscription with no commitment.</li></ul>
-<p>The main features of each offer are shown on the Plans page, in accordance with article L111-1 of the French Consumer Code.</p>
+<ul><li><strong>Free</strong>: all the training (routines, tests, ranks, pass, crates, optimisation, forum, challenges), with no time limit.</li><li><strong>Jade+</strong>: a subscription giving access to the weak-point analysis and recommended routines, a 24-widget showcase with the Gallery widget, the custom banner, Jade+ cosmetics (frame, banner, title) and badge, and priority support. Monthly (€4.99) or yearly (€39.99).</li><li><strong>Founder pack</strong>: a one-time purchase (€14.99) including a Founder frame, banner and title available for life, and 3 months of Jade+ with no renewal. Offered until the app launches.</li></ul>
+<p>The main characteristics of each offer are shown on the Jade+ page and repeated before payment. No offer includes Jade Coins or crates: they are never sold.</p>
 <h3>2. Prices</h3>
-<p>Prices are shown in euros, all taxes included (article L112-1 of the Consumer Code). No subscription or purchase gives Jade Coins.</p>
-<h3>3. Order</h3>
-<p>Before confirming, you see a summary of your order and its total price. The confirmation button reads "Order with obligation to pay" or an equivalent wording (article L221-14). A confirmation is sent to you by email on a durable medium.</p>
+<p>Prices are in euros, all taxes included. A subscription price cannot increase without you being told at least one month in advance, with the option to cancel.</p>
+<h3>3. Ordering</h3>
+<p>A Jade account is required. Before confirming, you see the summary of the offer and its total price, accept these terms and request immediate access to the content. The confirmation button reads "Pay" followed by the amount. A confirmation is sent to you by email.</p>
 <h3>4. Payment</h3>
-<p>Payment is processed by ${TODO('name of the licensed payment provider')}. Jade never has access to your card details.</p>
-<h3>5. Duration, renewal and cancellation of the subscription</h3>
-<ul><li>The Premium subscription is monthly and renews automatically.</li><li>You can cancel it at any time, online, with the cancellation feature available in the Subscription tab of your profile (article L215-1-1 of the Consumer Code, "three-click cancellation"). An acknowledgment is sent to you.</li><li>Cancellation takes effect at the end of the period already paid.</li></ul>
+<p>Payment is made by card and processed by Stripe Payments Europe, Ltd. (Ireland), a licensed, PCI-DSS certified payment provider. Jade never has access to your card details. Subscriptions are charged at the start of each period.</p>
+<h3>5. Term, renewal and cancellation</h3>
+<ul><li>Jade+ runs for one month or one year and renews automatically for the same term.</li><li>For the yearly plan, you are told by email, no earlier than three months and no later than one month before the end of the term, that you can choose not to renew.</li><li>You can cancel at any time online from the Subscription tab of your profile. An acknowledgement is sent to you. Cancellation takes effect at the end of the current, already paid period.</li><li>When the subscription ends, Jade+ features are hidden; your progress, items and showcase are kept.</li></ul>
 <h3>6. Right of withdrawal</h3>
-<p>You have 14 days from the conclusion of the contract to withdraw, without giving reasons (article L221-18). To do so, write to ${MAIL} or use the standard withdrawal form.</p>
-<p>Exceptions: for digital content not supplied on a tangible medium (Program), the right of withdrawal can no longer be exercised once performance has begun with your prior express consent and your express waiver of this right (article L221-28, 13°). For a service (Premium) whose performance you request before the end of the period, you owe an amount proportionate to the service provided until your withdrawal (article L221-25).</p>
+<p>In principle you have 14 days to withdraw, with no justification. However, Jade+ and the Founder pack provide digital content as soon as payment is made: by ordering, you expressly request this immediate access and acknowledge that you lose your right of withdrawal once access begins. For the service part of the subscription, if withdrawal remains possible, you owe an amount proportional to the service provided. If there is a problem, write to ${MAIL}.</p>
 <h3>7. Legal guarantee of conformity</h3>
-<p>Digital content and services benefit from the legal guarantee of conformity under articles L224-25-12 et seq. of the Consumer Code: bringing into conformity, or failing that, a price reduction or termination of the contract. For continuous supply (subscription), the guarantee covers the whole supply period; for a single supply (Program), defects appearing within two years.</p>
+<p>Digital content and services benefit from the legal guarantee of conformity: bringing into conformity, or failing that a price reduction or termination of the contract. For the subscription, the guarantee covers the whole supply period; for the Founder pack, defects appearing within two years.</p>
 <h3>8. Customer service</h3>
-<p>${MAIL}. Reply within 48 working hours on average.</p>
+<p>${MAIL}. Average reply within 48 business hours, with priority for Jade+ members.</p>
 <h3>9. Consumer mediation</h3>
-<p>In accordance with article L612-1 of the Consumer Code, if a dispute is not resolved by customer service, you may use the consumer mediator free of charge: ${TODO('mediator name, website and address')}.</p>
+<p>If a dispute is not resolved by customer service, you may use the consumer mediator free of charge: ${TODO('mediator name, website and address')}.</p>
 <h3>10. Applicable law</h3>
-<p>These terms are governed by French law, without prejudice to more protective provisions of your country of residence.</p>` },
+<p>These terms are governed by French law, without prejudice to the more protective provisions of your country of residence.</p>` },
 
-  { id: 'privacy', title: 'Privacy policy', updated: '2026-09-27', html: `
+  { id: 'privacy', title: 'Privacy policy', updated: '2026-09-28', html: `
 <p>This policy explains what data Jade processes, why, and what your rights are, in accordance with Regulation (EU) 2016/679 (GDPR) and French law no. 78-17 of 6 January 1978 (Data Protection Act).</p>
 <h3>Data controller</h3>
-<p>${EDITOR}, reachable at ${MAIL}. ${TODO('Contact details of the data protection officer, if appointed')}.</p>
+<p>${EDITOR}, reachable at ${MAIL}. No data protection officer has been appointed; this is not mandatory for Jade.</p>
 <h3>Current situation</h3>
 <p>In its current version, Jade runs without an account server: your account, progress, Jade Coins, inventory and sessions are stored <strong>only in your browser's local storage</strong>. The publisher has no access to them. The items below also describe how things will work once online accounts open; this policy will be updated at that time.</p>
 <h3>Data processed, purposes and legal bases</h3>
@@ -87,11 +86,11 @@ export default [
 <li><strong>Audience measurement</strong>: off by default, only with your consent (see the cookie policy).</li>
 </ul>
 <h3>Recipients</h3>
-<p>Data is intended for the publisher and its technical processors: site hosting (Vercel Inc.) and, once accounts are online, ${TODO('database and email provider')}. The site's fonts are hosted on the site itself: no request is sent to a third-party font service. No data is sold or used for advertising.</p>
+<p>Data is intended for the publisher and its technical processors: site hosting (Vercel Inc.) and, once accounts are online, Supabase Inc. (database, authentication and sign-in emails, servers in the European Union) and Stripe Payments Europe, Ltd. (payments, Ireland). The site's fonts are hosted on the site itself: no request is sent to a third-party font service. No data is sold or used for advertising.</p>
 <h3>Transfers outside the European Union</h3>
 <p>The site host is established in the United States. Any transfers are covered by the EU–US Data Privacy Framework or by the European Commission's standard contractual clauses.</p>
 <h3>Retention periods</h3>
-<ul><li>Account and training data: as long as the account exists, then deleted within 30 days.</li><li>Forum posts: deleted or anonymized when the account is deleted.</li><li>Connection data: 1 year (legal obligation).</li><li>Support messages: 3 years after the last exchange.</li><li>Cookie choices: 6 months.</li></ul>
+<ul><li>Account and training data: as long as the account exists, then deleted within 30 days.</li><li>Forum posts: deleted or anonymized when the account is deleted.</li><li>Connection data: 1 year (legal obligation).</li><li>Support messages: 3 years after the last exchange.</li><li>Cookie choices: 6 months.</li><li>Invoices and accounting records of purchases: 10 years (article L123-22 of the French Commercial Code).</li></ul>
 <h3>Automated decisions</h3>
 <p>Level, rank and badges are calculated automatically from your results. This calculation has no legal effect and no significant consequence within the meaning of article 22 of the GDPR.</p>
 <h3>Minors</h3>
@@ -202,6 +201,10 @@ export default [
 <p>Scenarios belong to their respective creators. Their names are quoted as they are so you can find them in Kovaak's and Aim Lab.</p>
 <h3>Trademarks</h3>
 <p>Counter-Strike 2 and Steam are trademarks of Valve Corporation; Valorant is a trademark of Riot Games; Kovaak's belongs to its publishers; Aim Lab is a trademark of Statespace; FACEIT and Discord belong to their respective owners. Jade is an independent site with no official link to these companies.</p>
+<h3>CS2 skins</h3>
+<p>The skin list of the Collection widget comes from the open <strong>CSGO-API</strong> by ByMykel (MIT licence). Skin images are served by Steam and belong to Valve Corporation.</p>
+<h3>Founders</h3>
+<p>Thanks to the players who support Jade with the Founder pack. Their nicknames will appear here once payments open.</p>
 <h3>Fonts and graphics</h3>
 <p>Chakra Petch and Manrope fonts, under the SIL Open Font License 1.1, hosted on the site. Rank emblems, crate art, icons and cosmetics are made for Jade.</p>
 <h3>Practical information</h3>
