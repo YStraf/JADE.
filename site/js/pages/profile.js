@@ -15,7 +15,8 @@ import { level, runs, saveRuns, xpData } from '../state/progress.js';
 import { getPlayer } from '../state/players.js';
 import { setTheme } from '../state/theme.js';
 import { pageHead, avatar, itemCard, itemName, rarityLabel, seg } from '../components/ui.js';
-import { showcaseHTML, WIDGETS } from '../components/showcase.js';
+import { showcaseHTML } from '../components/showcase.js';
+import { editorBar, editorHint, editState, bindEditor } from '../components/wedit.js';
 import { rankLabel } from '../components/minicard.js';
 import { emblem } from '../components/emblem.js';
 import { openAuth } from '../components/auth.js';
@@ -50,7 +51,7 @@ function tabBody() {
   if (tab === 'showcase') {
     const me2 = getPlayer(u.pseudo);
     const titles = ITEMS.filter(i => i.type === 'title' && owned(i.id));
-    return '<div class="row-flex" style="margin-bottom:14px"><a class="btn small" href="#/joueur/' + encodeURIComponent(u.pseudo) + '">' + ic('eye') + esc(t('profile.public')) + '</a><button class="btn small ghost" id="copyLink">' + ic('copy') + esc(t('profile.copyLink')) + '</button></div>' + showcaseHTML(me2) +
+    return '<div class="row-flex" style="margin-bottom:14px"><a class="btn small" href="#/joueur/' + encodeURIComponent(u.pseudo) + '">' + ic('eye') + esc(t('profile.public')) + '</a><button class="btn small ghost" id="copyLink">' + ic('copy') + esc(t('profile.copyLink')) + '</button>' + editorBar() + '</div>' + editorHint() + showcaseHTML(me2, editState()) +
       '<div class="card"><h3>' + esc(t('look.banner')) + '</h3><p class="desc">' + esc(t('look.bannerSub')) + '</p>' + picker('banner', st.bannerImg ? '' : st.banner, 'data-bn') + '</div>' +
       '<div class="card"><h3>' + esc(t('look.frame')) + '</h3><p class="desc">' + esc(t('look.frameSub')) + '</p>' + picker('frame', st.frame, 'data-fr') + '</div>' +
       '<div class="card"><h3>' + esc(t('look.title')) + '</h3><p class="desc">' + esc(t('look.titleSub')) + '</p>' +
@@ -58,8 +59,7 @@ function tabBody() {
       (titles.length ? '' : '<p class="muted small-note" style="margin-top:10px">' + esc(t('look.noTitles')) + '</p>') +
       (isAdmin() ? '<div class="field" style="margin-top:16px;max-width:380px"><label for="cTitle">' + esc(t('look.customTitle')) + '</label><input type="text" id="cTitle" maxlength="40" value="' + esc(st.customTitle || '') + '" placeholder="' + esc(t('look.customTitlePh')) + '"></div><p class="inline-note">' + esc(t('look.customTitleNote')) + '</p>' : '<p class="inline-note">' + esc(t('look.titleRule')) + '</p>') + '</div>' +
       '<div class="card"><h3>' + esc(t('look.bg')) + '</h3><p class="desc">' + esc(t('look.bgSub')) + '</p><div class="item-grid"><button type="button" class="item-card" data-bgpick="none" aria-pressed="' + (!st.bg || st.bg === 'none') + '"><div class="item-prev"></div><b>' + esc(t('look.noBg')) + '</b></button>' + ITEMS.filter(i => i.type === 'bg').map(i => itemCard(i.id, { pressed: st.bg === i.key, locked: !owned(i.id), attr: 'data-bgpick="' + i.key + '"', sub: owned(i.id) ? '' : esc(lockSub(i)) })).join('') + '</div></div>' +
-      '<div class="card"><h3>' + esc(t('look.extras')) + '</h3><div class="row"><div class="lbl"><b>' + esc(t('item.perk.namecolor')) + '</b><span>' + esc(owned('perk:namecolor') ? t('look.nameColorSub') : t('lock.tier', { n: 10 })) + '</span></div><button class="toggle" data-namecolor aria-pressed="' + (owned('perk:namecolor') && st.nameColor !== false) + '"' + (owned('perk:namecolor') ? '' : ' disabled') + '></button></div></div>' +
-      '<div class="card"><h3>' + esc(t('look.widgets')) + '</h3><p class="desc">' + esc(t('look.widgetsSub')) + '</p><div class="wtoggles">' + WIDGETS.map(w => '<label class="check"><input type="checkbox" data-wg="' + w + '"' + (p.widgets.includes(w) ? ' checked' : '') + '><span>' + esc(t('wg.' + w)) + '</span></label>').join('') + '</div></div>';
+      '<div class="card"><h3>' + esc(t('look.extras')) + '</h3><div class="row"><div class="lbl"><b>' + esc(t('item.perk.namecolor')) + '</b><span>' + esc(owned('perk:namecolor') ? t('look.nameColorSub') : t('lock.tier', { n: 10 })) + '</span></div><button class="toggle" data-namecolor aria-pressed="' + (owned('perk:namecolor') && st.nameColor !== false) + '"' + (owned('perk:namecolor') ? '' : ' disabled') + '></button></div></div>';
   }
   if (tab === 'xp') {
     const L = level(); const pl = getPlayer(u.pseudo); const r = pl.rank;
@@ -97,6 +97,7 @@ function paint(root) {
 }
 function bind(root) {
   const rerender = () => paint(root);
+  bindEditor(root, rerender);
   root.addEventListener('click', async e => {
     const tb = e.target.closest('[data-tab]'); if (tb) { tab = tb.dataset.tab; history.replaceState(null, '', '#/profil/' + tab); paint(root); return; }
     const u = me(); if (!u) return;
@@ -131,10 +132,8 @@ function bind(root) {
   });
   root.addEventListener('change', e => {
     if (e.target.id === 'fileAv') readImage(e.target.files[0], 320, url => { upd(p => { p.style.avatarImg = url; p.style.avatarZoom = 100; p.style.avatarX = 50; p.style.avatarY = 50; }); paint(root); toast(t('profile.avatarSet')); });
-    const wg = e.target.closest('[data-wg]'); if (wg) upd(p => { const s = new Set(p.widgets); wg.checked ? s.add(wg.dataset.wg) : s.delete(wg.dataset.wg); p.widgets = WIDGETS.filter(w => s.has(w)); });
     if (e.target.id === 'cTitle' && isAdmin()) { upd(p => { p.style.customTitle = e.target.value.trim(); }); paint(root); toast(t('common.saved')); }
     const cr = e.target.closest('[data-crop]'); if (cr) upd(p => { p.style[cr.dataset.crop] = +cr.value; });
-    if (wg) paint(root);
   });
   root.addEventListener('input', e => { const cr = e.target.closest('[data-crop]'); if (cr) { const av = $('#avPrev .av-in', root); const p = profile(); p.style[cr.dataset.crop] = +cr.value; if (av) av.style.cssText = 'background-image:url(' + p.style.avatarImg + ');background-size:' + p.style.avatarZoom + '%;background-position:' + p.style.avatarX + '% ' + p.style.avatarY + '%'; } });
 }

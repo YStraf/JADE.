@@ -56,6 +56,20 @@
 .av[data-frame="sakura"]{--ring:#ff9dbb}
 .av[data-frame="sakura"]::after{inset:calc(var(--rw) * -3.4);border:calc(var(--rw) * .8) solid #ff5f5f}
 
+/* Ajouts : 5 contours */
+.av[data-frame="crosshair"]{--ring:var(--jade)}
+.av[data-frame="crosshair"]::after{inset:calc(var(--rw) * -4);background:linear-gradient(var(--jade),var(--jade)) 50% 0/2px 22% no-repeat,linear-gradient(var(--jade),var(--jade)) 50% 100%/2px 22% no-repeat,linear-gradient(var(--jade),var(--jade)) 0 50%/22% 2px no-repeat,linear-gradient(var(--jade),var(--jade)) 100% 50%/22% 2px no-repeat;-webkit-mask:radial-gradient(farthest-side,transparent 72%,#000 73%);mask:radial-gradient(farthest-side,transparent 72%,#000 73%);border-radius:0}
+.av[data-frame="crimson"]{--ring:linear-gradient(135deg,#ff8a8a,#b3122e 50%,#ff4d5e)}
+.av[data-frame="cobalt"]{--ring:linear-gradient(135deg,#a9d2ff,#1f4fd1 50%,#5aa8ff)}
+.av[data-frame="cobalt"]::after{inset:calc(var(--rw) * -3.4);border:1px solid rgba(90,168,255,.5)}
+.av[data-frame="ember"]{--ring:conic-gradient(#ff3d00,#ffb300,#ff6d00,#ffd54f,#ff3d00)}
+.av[data-frame="ember"]::before{animation:spin 2.6s linear infinite}
+.av[data-frame="ember"]::after{inset:calc(var(--rw) * -2.2);box-shadow:0 0 12px rgba(255,109,0,.55);animation:emberGlow 1.2s ease-in-out infinite alternate}
+@keyframes emberGlow{to{box-shadow:0 0 20px rgba(255,179,0,.7)}}
+.av[data-frame="obsidian"]{--rw:4px;--ring:conic-gradient(from 0deg,#0b0b12,#3b2a66,#0b0b12 40%,#6b4bd6 50%,#0b0b12 60%,#3b2a66,#0b0b12)}
+.av[data-frame="obsidian"]::before{animation:spin 5s linear infinite}
+.av[data-frame="obsidian"]::after{inset:calc(var(--rw) * -2.8);border:1px solid rgba(163,119,255,.55);box-shadow:0 0 14px rgba(107,75,214,.45)}
+
 /* ===== Bannières ===== */
 .banner{position:relative;height:120px;overflow:hidden;background:var(--card);background-size:cover;background-position:center}
 .banner .sheen{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,color-mix(in srgb,var(--bg2) 90%,transparent))}
@@ -85,6 +99,17 @@
 @keyframes dm{to{background-position:100% 50%,0% 60%,80% 0%,18px 18px,100% 50%}}
 [data-banner="sakura"]{background:radial-gradient(circle at 78% 26%,#ff5f5f 0 40px,transparent 41px),radial-gradient(rgba(255,214,228,.85) 2px,transparent 2.6px) 0 0/54px 54px,radial-gradient(rgba(255,182,206,.7) 1.6px,transparent 2.2px) 18px 26px/38px 38px,linear-gradient(170deg,#ffe8f0,#ffc2d6 45%,#f79bb8);background-size:auto,54px 54px,38px 38px,100% 100%;animation:sakura 14s linear infinite}
 @keyframes sakura{to{background-position:78% 26%,-54px 108px,-38px 76px,0 0}}
+
+/* Ajouts : 5 bannières */
+[data-banner="tactical"]{background:radial-gradient(40% 60% at 20% 30%,#3d4a2f 0 60%,transparent 61%),radial-gradient(35% 55% at 70% 70%,#2a3321 0 60%,transparent 61%),radial-gradient(30% 45% at 85% 20%,#4d5a3a 0 60%,transparent 61%),radial-gradient(30% 50% at 40% 90%,#56623f 0 60%,transparent 61%),#1d2418}
+[data-banner="inferno"]{background:radial-gradient(90% 120% at 50% 130%,#ffd54f,#ff6d00 35%,transparent 70%),linear-gradient(180deg,#1a0805,#5a1405 60%,#b3260b)}
+@property --ra{syntax:'<angle>';inherits:false;initial-value:0deg}
+[data-banner="radar"]{background:conic-gradient(from var(--ra) at 50% 50%,rgba(46,232,138,.55),transparent 18%),repeating-radial-gradient(circle at 50% 50%,transparent 0 22px,rgba(46,232,138,.3) 23px 24px),#06140d;animation:radar 4s linear infinite}
+@keyframes radar{to{--ra:360deg}}
+[data-banner="glitch"]{background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 4px),linear-gradient(90deg,transparent 30%,rgba(255,79,216,.45) 30% 34%,transparent 34% 62%,rgba(79,195,255,.45) 62% 65%,transparent 65%),linear-gradient(135deg,#120a1f,#1b1036 50%,#0a1a2a);background-size:100% 100%,200% 100%,100% 100%;animation:glitch 2.4s steps(6) infinite}
+@keyframes glitch{to{background-position:0 0,200% 0,0 0}}
+[data-banner="eclipse"]{background:radial-gradient(circle at 50% 50%,#000 0 34px,rgba(255,226,122,.95) 36px,rgba(232,185,63,.4) 44px,transparent 70px),radial-gradient(#fff 1px,transparent 1.5px) 0 0/32px 32px,linear-gradient(160deg,#07070d,#1a1405 60%,#0b0b12);animation:eclipse 5s ease-in-out infinite alternate}
+@keyframes eclipse{to{filter:brightness(1.25) saturate(1.2)}}
 
 /* ===== Fonds de vitrine (palier 40) ===== */
 [data-bg="nebula"]{background:radial-gradient(60% 80% at 10% 0%,rgba(163,119,255,.18),transparent 60%),radial-gradient(60% 80% at 100% 100%,rgba(90,168,255,.16),transparent 60%),var(--bg2)!important}
