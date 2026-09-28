@@ -70,6 +70,14 @@
 .av[data-frame="obsidian"]::before{animation:spin 5s linear infinite}
 .av[data-frame="obsidian"]::after{inset:calc(var(--rw) * -2.8);border:1px solid rgba(163,119,255,.55);box-shadow:0 0 14px rgba(107,75,214,.45)}
 
+/* Jade+ et Fondateur */
+.av[data-frame="plus"]{--rw:4px;--ring:conic-gradient(from 0deg,#2EE88A,#b8ffdd,#ffd36b,#2EE88A,#0E7A45,#2EE88A)}
+.av[data-frame="plus"]::before{animation:spin 3.6s linear infinite}
+.av[data-frame="plus"]::after{inset:calc(var(--rw) * -2.6);box-shadow:0 0 16px rgba(46,232,138,.45),0 0 4px rgba(255,211,107,.6);animation:glow 2.6s ease-in-out infinite}
+.av[data-frame="founder"]{--rw:4px;--ring:conic-gradient(from 0deg,#fff1b8,#e8b93f,#8a5a00,#ffe27a,#2EE88A,#fff1b8)}
+.av[data-frame="founder"]::before{animation:spin 6s linear infinite}
+.av[data-frame="founder"]::after{inset:calc(var(--rw) * -3.4);border:2px solid rgba(255,226,122,.7);box-shadow:0 0 18px rgba(232,185,63,.45)}
+
 /* ===== Bannières ===== */
 .banner{position:relative;height:120px;overflow:hidden;background:var(--card);background-size:cover;background-position:center}
 .banner .sheen{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,color-mix(in srgb,var(--bg2) 90%,transparent))}
@@ -111,6 +119,10 @@
 [data-banner="eclipse"]{background:radial-gradient(circle at 50% 50%,#000 0 34px,rgba(255,226,122,.95) 36px,rgba(232,185,63,.4) 44px,transparent 70px),radial-gradient(#fff 1px,transparent 1.5px) 0 0/32px 32px,linear-gradient(160deg,#07070d,#1a1405 60%,#0b0b12);animation:eclipse 5s ease-in-out infinite alternate}
 @keyframes eclipse{to{filter:brightness(1.25) saturate(1.2)}}
 
+[data-banner="plus"]{background:radial-gradient(60% 120% at 15% 110%,rgba(255,211,107,.45),transparent 60%),radial-gradient(50% 90% at 85% -10%,rgba(46,232,138,.6),transparent 60%),linear-gradient(120deg,#04140c,#0b2e1d 45%,#10261a);background-size:180% 180%,200% 200%,100% 100%;animation:plusBn 10s ease-in-out infinite alternate}
+@keyframes plusBn{to{background-position:100% 0,0 100%,0 0}}
+[data-banner="founder"]{background:linear-gradient(115deg,transparent 42%,rgba(255,241,184,.75) 50%,transparent 58%) 0 0/300% 100% no-repeat,repeating-linear-gradient(45deg,rgba(232,185,63,.10) 0 2px,transparent 2px 14px),linear-gradient(160deg,#1a1405,#3a2a06 55%,#0f1a12);animation:comet 6s ease-in-out infinite}
+
 /* ===== Fonds de vitrine (palier 40) ===== */
 [data-bg="nebula"]{background:radial-gradient(60% 80% at 10% 0%,rgba(163,119,255,.18),transparent 60%),radial-gradient(60% 80% at 100% 100%,rgba(90,168,255,.16),transparent 60%),var(--bg2)!important}
 [data-bg="arena"]{background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/34px 34px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/34px 34px,var(--bg2)!important}
@@ -120,7 +132,7 @@
 
 /* ===== Titres & raretés ===== */
 .title-pill{display:inline-flex;align-items:center;gap:6px;font:700 12px var(--body);padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--rc,var(--jade)) 15%,transparent);color:var(--rc,var(--jade));white-space:nowrap}
-.rar-common{--rc:var(--common)}.rar-rare{--rc:var(--rare)}.rar-epic{--rc:var(--epic)}.rar-legend{--rc:var(--legend)}.rar-tier{--rc:var(--jade)}.rar-secret{--rc:var(--pink)}.rar-admin{--rc:var(--danger)}.rar-base{--rc:var(--muted)}
+.rar-common{--rc:var(--common)}.rar-rare{--rc:var(--rare)}.rar-epic{--rc:var(--epic)}.rar-legend{--rc:var(--legend)}.rar-tier{--rc:var(--jade)}.rar-secret{--rc:var(--pink)}.rar-admin{--rc:var(--danger)}.rar-plus{--rc:#2EE88A}.rar-founder{--rc:#e8b93f}.rar-base{--rc:var(--muted)}
 .rarity{display:inline-flex;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:7px;background:color-mix(in srgb,var(--rc) 16%,transparent);color:var(--rc)}
 
 /* Aperçu d'objet */

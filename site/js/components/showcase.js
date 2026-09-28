@@ -6,6 +6,7 @@ import { ic } from '../core/icons.js';
 import { TESTS } from '../data/game.js';
 import { skillOf } from '../data/routines.js';
 import { WTYPES, COLS, ROWS, SHORT, dims, rowsUsed, layoutFrom } from '../data/widgets.js';
+import { LIMITS } from '../data/premium.js';
 import { avatar, banner } from './ui.js';
 import { emblem } from './emblem.js';
 import { rankLabel, titleOf } from './minicard.js';
@@ -60,7 +61,7 @@ function jadeW(id, p) {
 }
 
 // ---- Widgets de personnalisation ----
-export const CS_RAR = { consumer: '#b0c3d9', industrial: '#5e98d9', milspec: '#4b69ff', restricted: '#8847ff', classified: '#d32ce6', covert: '#eb4b4b', gold: '#e4ae39' };
+export const CS_RAR = { consumer: '#b0c3d9', industrial: '#5e98d9', milspec: '#4b69ff', restricted: '#8847ff', classified: '#d32ce6', covert: '#eb4b4b', gold: '#e4ae39', contraband: '#e4ae39' };
 export const CS_WEAR = ['FN', 'MW', 'FT', 'WW', 'BS'];
 function persoW(w, p) {
   const c = w.cfg || {}; const media = c.media && p.media ? p.media(w.id) : '';
@@ -76,7 +77,12 @@ function persoW(w, p) {
   }
   if (w.type === 'collection') {
     const items = (c.items || []).filter(x => x && x.name);
-    return head('crate', c.title || t('wt.collection')) + (items.length ? '<div class="wcoll">' + items.map(x => { const img = safeUrl(x.img); return '<div class="csi" style="--rc:' + (CS_RAR[x.rar] || CS_RAR.milspec) + '">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<span class="csi-ph">' + ic('crate') + '</span>') + '<b>' + (x.st ? '<span class="st">ST™</span> ' : '') + esc(x.name) + '</b><small>' + esc(CS_WEAR.includes(x.wear) ? x.wear : '') + (x.float ? ' · ' + esc(String(x.float).slice(0, 8)) : '') + '</small></div>'; }).join('') + '</div>' : note('wg.coll.empty'));
+    return head('crate', c.title || t('wt.collection')) + (items.length ? '<div class="wcoll">' + items.map(x => { const img = safeUrl(x.img); return '<div class="csi" style="--rc:' + (CS_RAR[x.rar] || CS_RAR.milspec) + '">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<span class="csi-ph">' + ic('crate') + '</span>') + '<b>' + (x.q === 'st' || x.st ? '<span class="st">ST™</span> ' : x.q === 'sv' ? '<span class="sv">SV</span> ' : '') + esc(x.name) + '</b><small>' + esc(CS_WEAR.includes(x.wear) ? x.wear : '') + (x.float ? ' · ' + esc(String(x.float).slice(0, 8)) : '') + '</small></div>'; }).join('') + '</div>' : note('wg.coll.empty'));
+  }
+  if (w.type === 'gallery') {
+    const imgs = (c.urls || []).map(safeUrl).filter(Boolean);
+    if (!imgs.length) return p.self ? head('grid', t('wt.gallery')) + note('wg.media.empty') : '';
+    return '<div class="wgal" tabindex="0" aria-label="' + esc(t('wt.gallery')) + '">' + imgs.map(u => '<img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="object-fit:' + (c.fit === 'contain' ? 'contain' : 'cover') + '">').join('') + '</div>' + (imgs.length > 1 ? '<div class="wgal-dots">' + imgs.map(() => '<i></i>').join('') + '</div>' : '');
   }
   if (w.type === 'text') return (c.title ? head('edit', c.title) : '') + (c.text ? '<p class="wtext" style="text-align:' + (['center', 'right'].includes(c.align) ? c.align : 'left') + '">' + esc(c.text) + '</p>' : (p.self ? note('wg.text.empty') : ''));
   if (w.type === 'setup') {
@@ -96,14 +102,18 @@ function body(w, p) {
 
 // Rend la grille. opts.edit : cases visibles + barre d'outils sur chaque widget.
 export function gridHTML(p, opts = {}) {
-  const lay = layoutFrom(p); const edit = !!opts.edit;
+  const all = layoutFrom(p); const edit = !!opts.edit;
+  // Sans Jade+ : pas de widget réservé, et pas plus de widgets que la limite gratuite (les autres restent gardés).
+  const cap = p.plus || p.demo ? LIMITS.plus : LIMITS.free;
+  const lay = edit ? all : all.filter(w => p.plus || p.demo || !WTYPES[w.type].plus).sort((a, b) => a.y - b.y || a.x - b.x).slice(0, cap);
   const hideStats = !p.self && p.prefs && p.prefs.showScores === false;
   const boxes = lay.map(w => {
     const T = WTYPES[w.type]; if (!edit && hideStats && T.stats) return '';
     const inner = body(w, p); if (!inner && !edit) return '';
     const [cw, ch] = dims(w);
-    return '<div class="wbox wt-' + w.type + (opts.sel === w.id ? ' sel' : '') + '" data-wid="' + esc(w.id) + '" data-sz="' + w.size + '" style="--gc:' + (w.x + 1) + ' / span ' + cw + ';--gr:' + (w.y + 1) + ' / span ' + ch + ';--mc:span ' + Math.min(cw, 2) + ';--mr:span ' + ch + ';--o:' + (w.y * COLS + w.x) + '">' +
-      (edit ? '<div class="wtools"><button type="button" class="wmove" data-wmove aria-label="' + esc(t('wg.move')) + '">' + ic('grid') + '</button><span class="wlabel">' + esc(t('wt.' + w.type)) + ' · ' + SHORT[w.size] + '</span>' + (T.cfg ? '<button type="button" data-wcfg aria-label="' + esc(t('wg.settings')) + '">' + ic('settings') + '</button>' : '') + '<button type="button" data-wsize aria-label="' + esc(t('wg.size')) + '">' + ic('layers') + '</button><button type="button" data-wdel aria-label="' + esc(t('common.remove')) + '">' + ic('trash') + '</button></div>' : '') +
+    const locked = edit && ((T.plus && !p.plus) || all.indexOf(w) >= cap);
+    return '<div class="wbox wt-' + w.type + (opts.sel === w.id ? ' sel' : '') + (locked ? ' wlocked' : '') + '" data-wid="' + esc(w.id) + '" data-sz="' + w.size + '" style="--gc:' + (w.x + 1) + ' / span ' + cw + ';--gr:' + (w.y + 1) + ' / span ' + ch + ';--mc:span ' + Math.min(cw, 2) + ';--mr:span ' + ch + ';--o:' + (w.y * COLS + w.x) + '">' +
+      (edit ? '<div class="wtools"><button type="button" class="wmove" data-wmove aria-label="' + esc(t('wg.move')) + '">' + ic('grid') + '</button><span class="wlabel">' + (locked ? ic('lock') : '') + esc(t('wt.' + w.type)) + ' · ' + SHORT[w.size] + '</span>' + (T.cfg ? '<button type="button" data-wcfg aria-label="' + esc(t('wg.settings')) + '">' + ic('settings') + '</button>' : '') + '<button type="button" data-wsize aria-label="' + esc(t('wg.size')) + '">' + ic('layers') + '</button><button type="button" data-wdel aria-label="' + esc(t('common.remove')) + '">' + ic('trash') + '</button></div>' : '') +
       '<div class="wbody">' + (inner || note('wg.nothing')) + '</div></div>';
   }).join('');
   const rows = edit ? Math.min(ROWS, Math.max(4, rowsUsed(lay) + 2)) : rowsUsed(lay);
@@ -115,7 +125,7 @@ export function gridHTML(p, opts = {}) {
 export function showcaseHTML(p, opts = {}) {
   const st = p.style || {}; const r = p.rank;
   return '<div class="showcase"' + (st.bg && st.bg !== 'none' ? ' data-bg="' + esc(st.bg) + '"' : '') + '>' + banner(st, '', 150) +
-    '<div class="idt">' + avatar(p, 96, 'big') + '<div class="nmz"><b>' + esc(p.pseudo) + '</b><div class="row-flex" style="gap:8px;margin-top:4px">' + titleOf(st) + '<span class="muted small-note">' + esc(t('xp.level')) + ' ' + p.level.lvl + '</span>' + (r ? '<span class="row-flex" style="gap:5px">' + emblem(r.index, { size: 20 }) + '<b style="color:' + r.c + ';font-size:13.5px">' + esc(rankLabel(r)) + '</b></span>' : '') + (p.level.lvl >= 65 ? '<span class="tag">' + esc(t('item.perk.beta')) + '</span>' : '') + (p.role === 'admin' ? '<span class="tag danger">' + esc(t('role.admin')) + '</span>' : '') + '</div>' + (p.bio ? '<p class="muted bio">' + esc(p.bio) + '</p>' : '') + '</div></div>' +
+    '<div class="idt">' + avatar(p, 96, 'big') + '<div class="nmz"><b>' + esc(p.pseudo) + '</b><div class="row-flex" style="gap:8px;margin-top:4px">' + titleOf(st) + '<span class="muted small-note">' + esc(t('xp.level')) + ' ' + p.level.lvl + '</span>' + (r ? '<span class="row-flex" style="gap:5px">' + emblem(r.index, { size: 20 }) + '<b style="color:' + r.c + ';font-size:13.5px">' + esc(rankLabel(r)) + '</b></span>' : '') + (p.plus ? '<span class="tag plus-tag">Jade+</span>' : '') + (p.level.lvl >= 65 ? '<span class="tag">' + esc(t('item.perk.beta')) + '</span>' : '') + (p.role === 'admin' ? '<span class="tag danger">' + esc(t('role.admin')) + '</span>' : '') + '</div>' + (p.bio ? '<p class="muted bio">' + esc(p.bio) + '</p>' : '') + '</div></div>' +
     (!p.self && p.prefs && p.prefs.showScores === false ? '<p class="muted" style="padding:0 24px 12px">' + esc(t('player.scoresHidden')) + '</p>' : '') +
     '<div class="wwrap" id="wWrap">' + gridHTML(p, opts) + '</div></div>';
 }

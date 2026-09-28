@@ -26,8 +26,13 @@ refonte Next.js + Supabase (spec-kit) ; `prototype/` est l'ancienne maquette, ne
 `js/state/` (comptes, économie, progression, communauté) · `js/components/` (ui, emblèmes, caisses,
 recherche, cookies, secrets) · `js/pages/<page>.js` (une par route, `render()` + `mount()`).
 
+## Jade+ et skins
+- Offres, prix et liens de paiement : `site/js/data/premium.js` (`PAY_LINKS` vides = paiements fermés). État par compte :
+  `site/js/state/premium.js` (`isPlus()`). Jamais de Jade Coins ni de caisses dans une offre payante.
+- Liste des skins CS2 : `site/data/cs2-skins.json`, régénérée par `node tools/cs2/build-skins.mjs`.
+
 ## Vérifier un changement
 - Traductions : `node tools/check-i18n.mjs` (doit afficher 0 manquante partout).
 - Navigateur : `tools/e2e/run.sh smoke fr,en,es,de,it,pl` (0 erreur attendue), puis selon le cas
-  `run.sh flow`, `run.sh mobile fr,de,pl`, `run.sh leak es,de,it,pl`. Détails : `tools/e2e/README.md`.
+  `run.sh flow`, `run.sh showcase` (vitrine + Jade+), `run.sh mobile fr,de,pl`, `run.sh leak es,de,it,pl`. Détails : `tools/e2e/README.md`.
 - Le hook `.claude/hooks/session-start.sh` lance le serveur local (port 8765) au démarrage.

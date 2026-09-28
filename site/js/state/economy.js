@@ -4,6 +4,7 @@ import { emit } from '../core/bus.js';
 import { dayKey } from '../core/dom.js';
 import { ITEM, ITEMS, CRATES, RARITY_W, ARCADE, levelFromXP } from '../data/game.js';
 import { isAdminSession, isAdult, me } from './account.js';
+import { isPlus } from './premium.js';
 
 export function settings() { return { arcadeEnabled: true, crateMult: 1, announce: '', ...store.get('settings', {}) }; }
 export function saveSettings(s) { store.set('settings', s); emit('settings'); }
@@ -34,6 +35,7 @@ export function owned(id) {
   if (isAdminSession()) return true;
   if (it.source === 'base') return true;
   if (it.source === 'tier') return level() >= it.lvl;
+  if (it.source === 'plus') return isPlus();
   return !!inventory()[id];
 }
 export function ownedOfType(type) { return ITEMS.filter(i => i.type === type && owned(i.id)); }

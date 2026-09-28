@@ -1,7 +1,7 @@
 // Mon profil : compte, vitrine (apparence), niveau, inventaire, sécurité, préférences, notifications, abonnement, support, données.
 import { $, $$, esc, download, uidGen } from '../core/dom.js';
 import { store, us } from '../core/store.js';
-import { t, C, fmt } from '../core/i18n.js';
+import { t, C, fmt, fmtDate } from '../core/i18n.js';
 import { ic } from '../core/icons.js';
 import { toast } from '../core/toast.js';
 import { SFX } from '../core/sfx.js';
@@ -16,6 +16,8 @@ import { getPlayer } from '../state/players.js';
 import { setTheme } from '../state/theme.js';
 import { pageHead, avatar, itemCard, itemName, rarityLabel, seg } from '../components/ui.js';
 import { showcaseHTML } from '../components/showcase.js';
+import { isPlus, subOf, purchases, cancelRenew } from '../state/premium.js';
+import { PORTAL_LINK, fmtPrice } from '../data/premium.js';
 import { editorBar, editorHint, editState, bindEditor } from '../components/wedit.js';
 import { rankLabel } from '../components/minicard.js';
 import { emblem } from '../components/emblem.js';
@@ -32,9 +34,9 @@ function readImage(file, max, cb) {
   fr.readAsDataURL(file);
 }
 const upd = fn => { const p = profile(); fn(p); saveProfile(p); return p; };
-function lockSub(it) { if (it.source === 'tier') return t('lock.tier', { n: it.lvl }); if (it.source === 'crate') return t('lock.crate'); if (it.source === 'secret') return t('lock.secret'); return ''; }
+function lockSub(it) { if (it.source === 'plus') return t('lock.plus'); if (it.source === 'founder') return t('lock.founder'); if (it.source === 'tier') return t('lock.tier', { n: it.lvl }); if (it.source === 'crate') return t('lock.crate'); if (it.source === 'secret') return t('lock.secret'); return ''; }
 function picker(type, cur, attr) {
-  const list = ITEMS.filter(i => i.type === type && (owned(i.id) || i.source !== 'secret'));
+  const list = ITEMS.filter(i => i.type === type && (owned(i.id) || (i.source !== 'secret' && i.source !== 'founder')));
   const sorted = list.sort((a, b) => (owned(b.id) - owned(a.id)));
   return '<div class="item-grid">' + sorted.map(i => { const own = owned(i.id); return itemCard(i.id, { pressed: cur === i.key, locked: !own, attr: attr + '="' + i.key + '"', sub: own ? rarityLabel(i.rarity) : esc(lockSub(i)) }); }).join('') + '</div>';
 }
@@ -52,7 +54,8 @@ function tabBody() {
     const me2 = getPlayer(u.pseudo);
     const titles = ITEMS.filter(i => i.type === 'title' && owned(i.id));
     return '<div class="row-flex" style="margin-bottom:14px"><a class="btn small" href="#/joueur/' + encodeURIComponent(u.pseudo) + '">' + ic('eye') + esc(t('profile.public')) + '</a><button class="btn small ghost" id="copyLink">' + ic('copy') + esc(t('profile.copyLink')) + '</button>' + editorBar() + '</div>' + editorHint() + showcaseHTML(me2, editState()) +
-      '<div class="card"><h3>' + esc(t('look.banner')) + '</h3><p class="desc">' + esc(t('look.bannerSub')) + '</p>' + picker('banner', st.bannerImg ? '' : st.banner, 'data-bn') + '</div>' +
+      '<div class="card"><h3>' + esc(t('look.banner')) + '</h3><p class="desc">' + esc(t('look.bannerSub')) + '</p>' +
+        '<div class="row-flex plus-row"><button class="btn small" id="upBn"' + (isPlus() ? '' : ' data-needplus') + '>' + ic(isPlus() ? 'upload' : 'lock') + esc(t('look.bannerUpload')) + '</button>' + (st.bannerImg ? '<button class="btn small danger" id="rmBn">' + esc(t('common.remove')) + '</button>' : '') + '<span class="tag plus-tag">Jade+</span><span class="muted small-note">' + esc(t('look.bannerUploadSub')) + '</span><input type="file" id="fileBn" accept="image/*" hidden></div>' + picker('banner', st.bannerImg ? '' : st.banner, 'data-bn') + '</div>' +
       '<div class="card"><h3>' + esc(t('look.frame')) + '</h3><p class="desc">' + esc(t('look.frameSub')) + '</p>' + picker('frame', st.frame, 'data-fr') + '</div>' +
       '<div class="card"><h3>' + esc(t('look.title')) + '</h3><p class="desc">' + esc(t('look.titleSub')) + '</p>' +
       '<div class="title-pick"><button type="button" class="chip-btn" data-ti="" aria-pressed="' + (!st.title && !st.customTitle) + '">' + esc(t('look.noTitle')) + '</button>' + titles.map(i => '<button type="button" class="chip-btn rar-' + (i.rarity === 'base' ? 'tier' : i.rarity) + '" data-ti="' + i.key + '" aria-pressed="' + (st.title === i.key && !st.customTitle) + '">' + esc(itemName(i.id)) + '</button>').join('') + '</div>' +
@@ -81,8 +84,14 @@ function tabBody() {
       '<div class="card"><h3>' + esc(t('perso.privacy')) + '</h3><div class="row"><div class="lbl"><b>' + esc(t('perso.public')) + '</b><span>' + esc(t('perso.publicSub')) + '</span></div><button class="toggle" data-pref="publicProfile" aria-pressed="' + (p.prefs.publicProfile !== false) + '"></button></div><div class="row"><div class="lbl"><b>' + esc(t('perso.scores')) + '</b><span>' + esc(t('perso.scoresSub')) + '</span></div><button class="toggle" data-pref="showScores" aria-pressed="' + (p.prefs.showScores !== false) + '"></button></div></div>';
   }
   if (tab === 'notif') return '<div class="card"><h3>' + esc(t('profile.tab.notif')) + '</h3><p class="desc">' + esc(t('notif.sub')) + '</p>' + ['weekly', 'challenge', 'replies', 'news'].map(k => '<div class="row"><div class="lbl"><b>' + esc(t('notif.' + k)) + '</b><span>' + esc(t('notif.' + k + '.sub')) + '</span></div><button class="toggle" data-notif="' + k + '" aria-pressed="' + (p.notif[k] !== false) + '"></button></div>').join('') + '<p class="inline-note">' + esc(t('notif.legal')) + '</p></div>';
-  if (tab === 'sub') return '<div class="card"><h3>' + esc(t('profile.tab.sub')) + ' <span class="tag outline">' + esc(t('common.example')) + '</span></h3><p class="desc">' + esc(t('sub.sub')) + '</p><div class="plans">' + C('plans').map(pl => '<div class="plan' + (pl.id === 'free' ? ' cur' : '') + '"><b>' + esc(pl.name) + '</b><div class="price">' + esc(pl.price) + ' <small>' + esc(pl.per) + '</small></div><ul>' + pl.f.map(f => '<li>' + esc(f) + '</li>').join('') + '</ul><button class="btn ' + (pl.id === 'free' ? '' : 'primary') + '" ' + (pl.id === 'free' ? 'disabled' : 'data-paysoon') + '>' + esc(pl.id === 'free' ? t('sub.current') : t('common.soon')) + '</button></div>').join('') + '</div></div>' +
-    '<div class="card"><h3>' + esc(t('sub.billing')) + '</h3><div class="row"><div class="lbl"><b>' + esc(t('sub.method')) + '</b><span>' + esc(t('sub.noMethod')) + '</span></div><span class="badge">—</span></div><div class="row"><div class="lbl"><b>' + esc(t('sub.cancel')) + '</b><span>' + esc(t('sub.cancelSub')) + '</span></div><span class="badge ok">' + esc(t('sub.guaranteed')) + '</span></div></div>';
+  if (tab === 'sub') {
+    const sb = subOf(), on = isPlus(), buys = purchases();
+    return '<div class="card"><h3>' + esc(t('profile.tab.sub')) + '</h3>' +
+      '<div class="row"><div class="lbl"><b>' + (on ? 'Jade+' : esc(t('pr.free'))) + '</b><span>' + esc(on ? (sb.renew ? t('sub.renewsOn', { d: fmtDate(sb.until) }) : t('sub.endsOn', { d: fmtDate(sb.until) })) : t('sub.freeSub')) + '</span></div>' + (on ? '<span class="tag plus-tag">Jade+</span>' : '<a class="btn small primary" href="#/formules">' + ic('sparkles') + esc(t('pr.plus.cta')) + '</a>') + '</div>' +
+      (on && sb.renew ? '<div class="row"><div class="lbl"><b>' + esc(t('sub.cancel')) + '</b><span>' + esc(t('sub.cancelSub')) + '</span></div><button class="btn small danger" id="subCancel">' + esc(t('sub.cancelBtn')) + '</button></div>' : '') +
+      (on && PORTAL_LINK ? '<div class="row"><div class="lbl"><b>' + esc(t('sub.method')) + '</b><span>' + esc(t('sub.portalSub')) + '</span></div><a class="btn small" href="' + esc(PORTAL_LINK) + '" target="_blank" rel="noopener">' + ic('ext') + esc(t('sub.portal')) + '</a></div>' : '') + '</div>' +
+      '<div class="card"><h3>' + esc(t('sub.history')) + '</h3>' + (buys.length ? buys.map(b => '<div class="row"><div class="lbl"><b>' + esc(t('pay.title.' + b.offer)) + '</b><span>' + fmtDate(b.t) + '</span></div><b>' + fmtPrice(b.price) + '</b></div>').join('') : '<p class="muted">' + esc(t('sub.noHistory')) + '</p>') + '<p class="inline-note">' + esc(t('sub.coinsNever')) + '</p></div>';
+  }
   if (tab === 'support') return '<div class="card"><h3>' + esc(t('support.faq')) + '</h3><div class="faq">' + C('support').map(f => '<details><summary>' + esc(f[0]) + '</summary><p>' + esc(f[1]) + '</p></details>').join('') + '</div></div>' +
     '<div class="card"><h3>' + esc(t('support.contact')) + '</h3><div class="field"><label for="sSub">' + esc(t('support.subject')) + '</label><select id="sSub">' + ['tech', 'billing', 'content', 'scam', 'other'].map(k => '<option value="' + k + '">' + esc(t('support.s.' + k)) + '</option>').join('') + '</select></div><div class="field"><label for="sMsg">' + esc(t('support.message')) + '</label><textarea id="sMsg" placeholder="' + esc(t('support.messagePh')) + '"></textarea></div><button class="btn primary" id="sSend">' + esc(t('support.send')) + '</button><p class="inline-note">' + esc(t('support.delay')) + '</p></div>';
   if (tab === 'data') { const n = runs().length; return '<div class="card"><h3>' + esc(t('data.title')) + '</h3><p class="desc">' + esc(t('data.sub')) + '</p><div class="row"><div class="lbl"><b>' + esc(t('data.export')) + '</b><span>' + esc(t('data.exportSub')) + '</span></div><button class="btn small" id="expData">' + ic('download') + esc(t('data.exportBtn')) + '</button></div><div class="row"><div class="lbl"><b>' + esc(t('data.sessions')) + '</b><span>' + esc(t('data.sessionsSub', { n })) + '</span></div><button class="btn small" id="clrRuns">' + esc(t('common.erase')) + '</button></div></div>' +
@@ -110,6 +119,10 @@ function bind(root) {
       updateAccount({ pseudo: ps, email: em }); upd(p => { p.bio = bio; }); toast(t('common.saved')); rerender(); return;
     }
     if (e.target.closest('#upAv')) { $('#fileAv', root).click(); return; }
+    if (e.target.closest('[data-needplus]')) { toast(t('plus.needed')); go('formules'); return; }
+    if (e.target.closest('#upBn')) { $('#fileBn', root).click(); return; }
+    if (e.target.closest('#rmBn')) { upd(p => { p.style.bannerImg = ''; }); rerender(); return; }
+    if (e.target.closest('#subCancel')) { if (await confirmModal(t('sub.cancelConfirm'), { ok: t('sub.cancelBtn') })) { cancelRenew(); rerender(); toast(t('sub.canceled')); } return; }
     if (e.target.closest('#rmAv')) { upd(p => { p.style.avatarImg = ''; }); rerender(); return; }
     const bn = e.target.closest('[data-bn]'); if (bn && !bn.disabled) { upd(p => { p.style.banner = bn.dataset.bn; p.style.bannerImg = ''; }); rerender(); return; }
     const fr = e.target.closest('[data-fr]'); if (fr && !fr.disabled) { upd(p => { p.style.frame = fr.dataset.fr; }); rerender(); toast(t('look.frameApplied')); return; }
@@ -124,13 +137,14 @@ function bind(root) {
     const nf = e.target.closest('[data-notif]'); if (nf) { upd(p => { p.notif[nf.dataset.notif] = p.notif[nf.dataset.notif] === false; }); rerender(); return; }
     if (e.target.closest('[data-paysoon]')) { toast(t('sub.notActive')); return; }
     if (e.target.closest('#savePw')) { const a = $('#pw1', root).value, c = $('#pw2', root).value; if (a.length < 8) return toast(t('auth.err.password')); if (a !== c) return toast(t('sec.mismatch')); await changePassword(a); $('#pw1', root).value = ''; $('#pw2', root).value = ''; toast(t('sec.pwChanged')); return; }
-    if (e.target.closest('#sSend')) { const m = $('#sMsg', root).value.trim(); if (m.length < 10) return toast(t('support.tooShort')); const l = store.get('tickets', []); l.unshift({ id: uidGen(), by: u.pseudo, subject: $('#sSub', root).value, msg: m, t: Date.now(), status: 'open' }); store.set('tickets', l.slice(0, 200)); $('#sMsg', root).value = ''; toast(t('support.sent')); return; }
+    if (e.target.closest('#sSend')) { const m = $('#sMsg', root).value.trim(); if (m.length < 10) return toast(t('support.tooShort')); const l = store.get('tickets', []); l.unshift({ id: uidGen(), by: u.pseudo, subject: $('#sSub', root).value, msg: m, t: Date.now(), status: 'open', plus: isPlus() }); store.set('tickets', l.slice(0, 200)); $('#sMsg', root).value = ''; toast(t('support.sent')); return; }
     if (e.target.closest('#copyLink')) { try { await navigator.clipboard.writeText(location.origin + location.pathname + '#/joueur/' + encodeURIComponent(u.pseudo)); toast(t('common.copied')); } catch (x) { toast(t('common.copyFail')); } return; }
     if (e.target.closest('#expData')) { const data = { account: { ...u, pw: undefined }, profile: profile(), xp: xpData(), coins: us.get('coins', 0), coinLog: us.get('coinlog', []), inventory: inventory(), runs: runs(), bests: us.get('bests', {}), entries: us.get('entries', {}) }; download('jade-donnees.json', JSON.stringify(data, null, 2)); toast(t('data.exported')); return; }
     if (e.target.closest('#clrRuns')) { if (await confirmModal(t('prog.clearConfirm'))) { saveRuns([]); rerender(); toast(t('prog.cleared')); } return; }
     if (e.target.closest('#delAcc')) { if ($('#delConf', root).value.trim() !== u.pseudo) return toast(t('data.typeMismatch')); if (await confirmModal(t('data.deleteConfirm'))) { deleteAccount(); toast(t('data.deleted')); go(''); } return; }
   });
   root.addEventListener('change', e => {
+    if (e.target.id === 'fileBn' && isPlus()) { const f = e.target.files[0]; const done = url => { upd(p => { p.style.bannerImg = url; p.style.bannerZoom = 100; p.style.bannerX = 50; p.style.bannerY = 50; }); paint(root); toast(t('common.saved')); }; if (f && /^image\/gif$/.test(f.type)) { if (f.size > 1.5 * 1024 * 1024) toast(t('wg.gif.tooBig')); else { const fr = new FileReader(); fr.onload = () => done(fr.result); fr.readAsDataURL(f); } } else readImage(f, 1400, done); }
     if (e.target.id === 'fileAv') readImage(e.target.files[0], 320, url => { upd(p => { p.style.avatarImg = url; p.style.avatarZoom = 100; p.style.avatarX = 50; p.style.avatarY = 50; }); paint(root); toast(t('profile.avatarSet')); });
     if (e.target.id === 'cTitle' && isAdmin()) { upd(p => { p.style.customTitle = e.target.value.trim(); }); paint(root); toast(t('common.saved')); }
     const cr = e.target.closest('[data-crop]'); if (cr) upd(p => { p.style[cr.dataset.crop] = +cr.value; });
