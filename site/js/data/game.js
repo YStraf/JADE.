@@ -89,13 +89,17 @@ export const ITEMS = [
   I('perk', 'namecolor', 'tier', 'tier', { lvl: 10 }),
   I('theme', 'contrast', 'tier', 'tier', { lvl: 15 }),
   I('perk', 'regular', 'tier', 'tier', { lvl: 20 }),
+  I('frame', 'crosshair', 'tier', 'tier', { lvl: 25 }),
   I('frame', 'silver', 'tier', 'tier', { lvl: 30 }),
   I('perk', 'emote', 'tier', 'tier', { lvl: 30 }),
   ...['nebula', 'arena', 'forest', 'ember', 'neon'].map(k => I('bg', k, 'tier', 'tier', { lvl: 40 })),
+  I('banner', 'radar', 'tier', 'tier', { lvl: 45, anim: true }),
   I('frame', 'gold', 'tier', 'tier', { lvl: 50 }),
   ...['sharpshooter', 'grinder', 'strategist', 'clutch'].map(k => I('title', k, 'tier', 'tier', { lvl: 50 })),
   I('perk', 'beta', 'tier', 'tier', { lvl: 65 }),
+  I('frame', 'obsidian', 'tier', 'tier', { lvl: 70, anim: true }),
   I('theme', 'jade', 'tier', 'tier', { lvl: 80 }),
+  I('banner', 'eclipse', 'tier', 'tier', { lvl: 90, anim: true }),
   I('frame', 'jade_anim', 'tier', 'tier', { lvl: 100, anim: true }),
   I('title', 'veteran', 'tier', 'tier', { lvl: 100 }),
   // Caisses
@@ -107,6 +111,9 @@ export const ITEMS = [
   I('banner', 'aurora_live', 'rare', 'crate', { anim: true }), I('banner', 'wave', 'rare', 'crate', { anim: true }),
   I('frame', 'flux', 'epic', 'crate', { anim: true }), I('banner', 'particles', 'epic', 'crate', { anim: true }),
   I('frame', 'prism', 'legend', 'crate', { anim: true }), I('banner', 'comet', 'legend', 'crate', { anim: true }),
+  I('frame', 'crimson', 'common', 'crate'), I('banner', 'tactical', 'common', 'crate'),
+  I('frame', 'cobalt', 'rare', 'crate'), I('banner', 'inferno', 'rare', 'crate'),
+  I('frame', 'ember', 'epic', 'crate', { anim: true }), I('banner', 'glitch', 'epic', 'crate', { anim: true }),
   I('title', 'visionary', 'common', 'crate'), I('title', 'grindset', 'common', 'crate'), I('frame', 'basicplus', 'common', 'crate'),
   I('title', 'tryhard', 'rare', 'crate'), I('banner', 'circuit', 'rare', 'crate'), I('title', 'tracker', 'rare', 'crate'),
   I('title', 'localleg', 'epic', 'crate'), I('banner', 'holo', 'epic', 'crate', { anim: true }), I('title', 'flickgod', 'epic', 'crate'),
@@ -118,8 +125,8 @@ export const ITEMS = [
 export const ITEM = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 
 export const CRATES = {
-  static: { cost: 150, art: 'static', pool: ['frame:copper', 'frame:slate', 'banner:topo', 'banner:slate', 'banner:mist', 'frame:emerald', 'frame:glacier', 'banner:dusk', 'frame:goldsolid'] },
-  animated: { cost: 350, art: 'animated', pool: ['frame:pulse', 'frame:neon', 'banner:aurora_live', 'banner:wave', 'frame:flux', 'banner:particles', 'frame:prism', 'banner:comet'] },
+  static: { cost: 150, art: 'static', pool: ['frame:copper', 'frame:slate', 'banner:topo', 'banner:slate', 'banner:mist', 'frame:emerald', 'frame:glacier', 'banner:dusk', 'frame:goldsolid', 'frame:crimson', 'banner:tactical', 'frame:cobalt', 'banner:inferno'] },
+  animated: { cost: 350, art: 'animated', pool: ['frame:pulse', 'frame:neon', 'banner:aurora_live', 'banner:wave', 'frame:flux', 'banner:particles', 'frame:prism', 'banner:comet', 'frame:ember', 'banner:glitch'] },
   mixed: { cost: 220, art: 'mixed', pool: ['title:visionary', 'title:grindset', 'frame:basicplus', 'title:tryhard', 'banner:circuit', 'title:tracker', 'title:localleg', 'banner:holo', 'title:flickgod', 'frame:mystery', 'title:untouchable'] },
 };
 export function crateOdds(key) {
@@ -137,11 +144,15 @@ export const TIERS = [
   { lvl: 10, key: 'namecolor', items: ['perk:namecolor'] },
   { lvl: 15, key: 'contrast', items: ['theme:contrast'] },
   { lvl: 20, key: 'regular', items: ['perk:regular'] },
+  { lvl: 25, key: 'crosshair', items: ['frame:crosshair'] },
   { lvl: 30, key: 'silver', items: ['frame:silver', 'perk:emote'] },
   { lvl: 40, key: 'bgs', items: ['bg:nebula', 'bg:arena', 'bg:forest', 'bg:ember', 'bg:neon'] },
+  { lvl: 45, key: 'radar', items: ['banner:radar'] },
   { lvl: 50, key: 'gold', items: ['frame:gold', 'title:sharpshooter', 'title:grinder', 'title:strategist', 'title:clutch'] },
   { lvl: 65, key: 'beta', items: ['perk:beta'] },
+  { lvl: 70, key: 'obsidian', items: ['frame:obsidian'] },
   { lvl: 80, key: 'jadetheme', items: ['theme:jade'] },
+  { lvl: 90, key: 'eclipse', items: ['banner:eclipse'] },
   { lvl: 100, key: 'veteran', items: ['frame:jade_anim', 'title:veteran'] },
 ];
 
