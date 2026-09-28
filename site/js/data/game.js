@@ -20,18 +20,20 @@ export const COIN_RULES = { session: 5, sessionDailyCap: 20, record_test: 25, st
 export const CHALLENGE_COINS = [[1, 300], [3, 250], [10, 200], [25, 150], [Infinity, 100]]; // [rang max, coins]
 
 // ---- Tests d'aim ----
+// Version 2 (plus dure) : plus de cibles, cibles plus petites, tracking plus rapide. Les records v1 sont archivés.
+export const TESTS_V = 2;
 export const TESTS = {
-  flick: { unit: 's', lower: true, n: 20, size: 42, pen: .25, skill: 'clicking' },
-  precision: { unit: 's', lower: true, n: 15, size: 20, pen: .5, skill: 'precision' },
-  reaction: { unit: 'ms', lower: true, n: 5, skill: 'reaction' },
-  tracking: { unit: '%', lower: false, dur: 20000, size: 64, skill: 'tracking' },
-  switching: { unit: 's', lower: true, n: 20, size: 48, pen: .25, skill: 'switching' },
+  flick: { unit: 's', lower: true, n: 30, size: 32, pen: .4, skill: 'clicking' },
+  precision: { unit: 's', lower: true, n: 20, size: 14, pen: .6, skill: 'precision' },
+  reaction: { unit: 'ms', lower: true, n: 7, skill: 'reaction' },
+  tracking: { unit: '%', lower: false, dur: 25000, size: 40, speed: 1 / 1400, turn: .2, skill: 'tracking' },
+  switching: { unit: 's', lower: true, n: 30, size: 36, pen: .4, skill: 'switching' },
 };
 // Bornes de plausibilité (en dessous/au-dessus : résultat ignoré).
-export const TEST_BOUNDS = { flick: v => v >= 4, precision: v => v >= 5, reaction: v => v >= 100, tracking: v => v <= 100, switching: v => v >= 4 };
-// Repères [excellent, faible] pour normaliser chaque test sur 0-100.
-export const REFS = { flick: [12, 30], precision: [18, 45], reaction: [180, 400], tracking: [85, 30], switching: [14, 35] };
-export function norm(k, v) { if (v == null) return null; const [g, b] = REFS[k]; return Math.max(0, Math.min(100, (v - b) / (g - b) * 100)); }
+export const TEST_BOUNDS = { flick: v => v >= 6, precision: v => v >= 6, reaction: v => v >= 100, tracking: v => v <= 100, switching: v => v >= 6 };
+// Repères [excellent, faible]. Le résultat suit une courbe (puissance 1,5) : le haut du classement demande un niveau d'élite.
+export const REFS = { flick: [16, 40], precision: [17, 50], reaction: [160, 340], tracking: [75, 20], switching: [15, 42] };
+export function norm(k, v) { if (v == null) return null; const [g, b] = REFS[k]; const x = Math.max(0, Math.min(1, (v - b) / (g - b))); return Math.pow(x, 1.5) * 100; }
 
 // ---- Rangs ----
 // 12 rangs, 3 divisions (III → I) pour les 10 premiers. Points 0-1000 = 70 % aim + 30 % assiduité.

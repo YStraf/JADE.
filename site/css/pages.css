@@ -677,3 +677,24 @@ body.intro-on{overflow:hidden}
 .ana-blur .li{grid-template-columns:130px 1fr}
 .ana-cta{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;gap:6px;padding:16px;background:color-mix(in srgb,var(--bg2) 55%,transparent)}
 @media (max-width:760px){.ana{grid-template-columns:1fr}.ana .li{grid-template-columns:100px 1fr 30px}}
+
+/* ===== Tests d'aim : grande zone, départ au clic, viseur ===== */
+.test-stage.big-stage{grid-template-columns:1fr;gap:16px}
+.big-stage .test-arena{aspect-ratio:16/9;max-height:74vh;width:100%;margin:0 auto}
+.test-info{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media (max-width:760px){.test-info{grid-template-columns:1fr}.big-stage .test-arena{aspect-ratio:4/5;max-height:70vh}}
+.ov-start{all:unset;cursor:pointer;position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;text-align:center;padding:22px}
+.ov-start .press{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:12px 22px;border-radius:999px;background:var(--jade);color:var(--on-jade);font:800 16px var(--display);letter-spacing:.02em;box-shadow:0 10px 30px -10px var(--jade-glow);animation:pressPulse 1.8s ease-in-out infinite}
+.ov-start .press svg{width:18px;height:18px}
+.ov-start:hover .press,.ov-start:focus-visible .press{transform:scale(1.04)}
+@keyframes pressPulse{50%{box-shadow:0 10px 40px -6px var(--jade-glow)}}
+.arena .overlay .count{font:800 96px/1 var(--display);color:var(--jade);animation:pop .5s cubic-bezier(.2,.9,.3,1.4)}
+.xhair{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;z-index:6;display:none}
+.aiming .xhair{display:block}
+.aiming,.aiming *{cursor:none!important}
+.xhair i,.xhair b{position:absolute;background:#2EE88A;box-shadow:0 0 0 1px rgba(0,0,0,.75)}
+.xhair i:nth-child(1){left:-1px;top:-13px;width:2px;height:9px}
+.xhair i:nth-child(2){left:-1px;top:4px;width:2px;height:9px}
+.xhair i:nth-child(3){top:-1px;left:-13px;width:9px;height:2px}
+.xhair i:nth-child(4){top:-1px;left:4px;width:9px;height:2px}
+.xhair b{left:-1px;top:-1px;width:2px;height:2px}
