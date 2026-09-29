@@ -1,0 +1,30 @@
+{
+  "name": "jade-app",
+  "productName": "Jade",
+  "version": "0.1.0",
+  "description": "Jade — application Windows d'aim training CS2 / Valorant",
+  "main": "main/main.js",
+  "private": true,
+  "scripts": {
+    "sync": "node scripts/sync-site.mjs",
+    "icon": "node scripts/make-icon.mjs",
+    "prestart": "npm run sync",
+    "start": "electron .",
+    "test": "node --test main/native/*.test.js",
+    "predist": "npm run sync && npm run icon",
+    "dist": "electron-builder --win nsis --publish never"
+  },
+  "devDependencies": {
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "gg.jade.app",
+    "productName": "Jade",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main/**/*", "renderer/**/*", "package.json", "!main/**/*.test.js"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.png" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "shortcutName": "Jade" },
+    "protocols": [{ "name": "Jade", "schemes": ["jade"] }]
+  }
+}

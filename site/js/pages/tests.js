@@ -5,7 +5,7 @@ import { ic } from '../core/icons.js';
 import { SFX } from '../core/sfx.js';
 import { us } from '../core/store.js';
 import { toast } from '../core/toast.js';
-import { TESTS, norm, rankOf } from '../data/game.js';
+import { TESTS, rankOf, DIFFS, recKey, testCfg, testScore, RANKS } from '../data/game.js';
 import { bests, submitTest } from '../state/progress.js';
 import { me } from '../state/account.js';
 import { pageHead } from '../components/ui.js';
@@ -13,13 +13,18 @@ import { emblem } from '../components/emblem.js';
 import { rankLabel } from '../components/minicard.js';
 
 const ICON = { flick: 'target', precision: 'eye', reaction: 'bolt', tracking: 'mouse', switching: 'layers' };
-let cur = null, engine = null;
+let cur = null, engine = null, diff = 'hard';
+const DKEYS = Object.keys(DIFFS);
 export function fmtVal(k, v) { if (v == null) return '—'; const u = TESTS[k].unit; return u === 'ms' ? Math.round(v) + ' ms' : (u === '%' ? fmt(v, 1) + ' %' : fmt(v, 2) + ' s'); }
-function skillBadge(k, v) { const n = norm(k, v); if (n == null) return '<span class="muted">' + esc(t('rank.unranked')) + '</span>'; const r = rankOf(Math.round(n * 10)); return '<span class="sk-rank">' + emblem(r.index, { size: 22 }) + '<span style="color:' + r.c + '">' + esc(rankLabel(r)) + '</span></span>'; }
+function skillBadge(k, b) { const sc = testScore(k, b), n = sc ? sc.s : null; if (n == null) return '<span class="muted">' + esc(t('rank.unranked')) + '</span>'; const r = rankOf(Math.round(n * 10)); return '<span class="sk-rank">' + emblem(r.index, { size: 22 }) + '<span style="color:' + r.c + '">' + esc(rankLabel(r)) + '</span></span>'; }
+function diffBar() {
+  return '<div class="diff-bar" role="group" aria-label="' + esc(t('diff.label')) + '">' + DKEYS.map(d => '<button type="button" data-diff="' + d + '" aria-pressed="' + (d === diff) + '"><b>' + esc(t('diff.' + d)) + '</b><small>' + esc(t('diff.cap', { r: t('rank.' + RANKS[DIFFS[d].cap].id) })) + '</small></button>').join('') + '</div>';
+}
 function grid(root) {
+  const db = $('#tDiff', root); if (db) db.innerHTML = diffBar();
   const b = bests();
-  $('#tGrid', root).innerHTML = Object.keys(TESTS).map(k => '<button type="button" class="tcard" data-test="' + k + '" aria-pressed="' + (k === cur) + '"><span class="t-ic">' + ic(ICON[k]) + '</span><b>' + esc(t('test.' + k + '.name')) + '</b><span>' + esc(t('test.' + k + '.short')) + '</span><span class="best">' + esc(t('test.record')) + ' : ' + fmtVal(k, b[k]) + '</span></button>').join('');
-  $('#tRecords', root).innerHTML = Object.keys(TESTS).map(k => '<div class="rec-row"><span>' + esc(t('test.' + k + '.name')) + '</span><b>' + fmtVal(k, b[k]) + '</b>' + skillBadge(k, b[k]) + '</div>').join('');
+  $('#tGrid', root).innerHTML = Object.keys(TESTS).map(k => '<button type="button" class="tcard" data-test="' + k + '" aria-pressed="' + (k === cur) + '"><span class="t-ic">' + ic(ICON[k]) + '</span><b>' + esc(t('test.' + k + '.name')) + '</b><span>' + esc(t('test.' + k + '.short')) + '</span><span class="best">' + esc(t('test.record')) + ' : ' + fmtVal(k, b[recKey(k, diff)]) + '</span></button>').join('');
+  $('#tRecords', root).innerHTML = Object.keys(TESTS).map(k => '<div class="rec-row"><span>' + esc(t('test.' + k + '.name')) + '</span><b>' + fmtVal(k, b[recKey(k, diff)]) + '</b>' + skillBadge(k, b) + '</div>').join('');
 }
 function pick(root, k) {
   stop(); cur = k; grid(root);
@@ -39,8 +44,8 @@ function crosshair(arena) {
   arena.addEventListener('pointerleave', () => arena.classList.remove('aiming'));
 }
 function end(root, k, val, extra) {
-  const res = submitTest(k, val); grid(root);
-  const n = norm(k, val); const r = n == null ? null : rankOf(Math.round(n * 10));
+  const res = submitTest(recKey(k, diff), val); grid(root);
+  const one = {}; one[recKey(k, diff)] = val; const sc = testScore(k, one); const r = sc ? rankOf(Math.round(sc.s * 10)) : null;
   const ov = $('#tOv', root);
   ov.innerHTML = '<div><div class="big">' + fmtVal(k, val) + '</div><div class="ov-stats">' + (extra || '') + (r ? '<div>' + emblem(r.index, { size: 34 }) + '<span class="muted">' + esc(rankLabel(r)) + '</span></div>' : '') + '</div>' + (res.invalid ? '<p class="inline-note" style="color:var(--danger)">' + esc(t('test.invalid')) + '</p>' : res.better ? '<p class="rec">' + esc(t('test.newRecord')) + '</p>' : '') + (!me() ? '<p class="inline-note">' + esc(t('test.guest')) + '</p>' : '') + '<button class="btn primary" data-start>' + ic('play') + esc(t('test.again')) + '</button></div>';
   ov.style.display = 'grid'; if (res.better) SFX.enter();
@@ -63,7 +68,7 @@ function run(root) {
   engine = halt;
   const dot = (size, cls) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'dot-target' + (cls ? ' ' + cls : ''); b.style.width = b.style.height = size + 'px'; b.style.margin = (-size / 2) + 'px 0 0 ' + (-size / 2) + 'px'; b.setAttribute('aria-label', t('test.target')); arena.appendChild(b); return b; };
   const place = (b, size) => { b.style.left = (size / 2 + Math.random() * (W() - size)) + 'px'; b.style.top = (size / 2 + 20 + Math.random() * (H() - size - 40)) + 'px'; };
-  const cfg = TESTS[k];
+  const cfg = testCfg(k, diff);
   if (k === 'flick' || k === 'precision') {
     let hits = 0, miss = 0; const t0 = performance.now(); A.textContent = '0 / ' + cfg.n;
     const b = dot(cfg.size); place(b, cfg.size);
@@ -103,16 +108,17 @@ export default {
   title: () => t('nav.tests'),
   render() {
     return pageHead(esc(t('nav.tests')), esc(t('tests.sub')), '<a class="btn small" href="#/rangs">' + ic('rank') + esc(t('tests.seeRanks')) + '</a>') +
-      '<div class="test-grid" id="tGrid"></div>' +
+      '<div class="diff-wrap" id="tDiff"></div><div class="test-grid" id="tGrid"></div>' +
       '<div class="test-stage big-stage"><div class="arena test-arena" id="tArena" aria-label="' + esc(t('tests.zone')) + '"><div class="hud"><span id="tA">—</span><span id="tB">—</span></div><div class="overlay" id="tOv"></div></div>' +
       '<div class="test-info"><div class="card"><h3 id="tTitle"></h3><p class="muted" id="tDesc" style="margin-top:6px"></p><p class="muted small-note" id="tHint" style="margin-top:6px"></p><button class="btn primary" id="tStart" style="margin-top:14px">' + ic('play') + esc(t('test.start')) + '</button></div>' +
       '<div class="card"><h4 style="margin-bottom:8px">' + esc(t('test.records')) + '</h4><div class="rec-list" id="tRecords"></div><p class="inline-note">' + esc(t('tests.rankNote')) + '</p></div></div></div>';
   },
   mount(root, sub) {
-    cur = TESTS[sub[0]] ? sub[0] : null; pick(root, cur); crosshair($('#tArena', root));
+    diff = DIFFS[us.get('testDiff', 'hard')] ? us.get('testDiff', 'hard') : 'hard'; cur = TESTS[sub[0]] ? sub[0] : null; pick(root, cur); crosshair($('#tArena', root));
     if (us.get('testsReset', false)) { us.set('testsReset', false); toast(t('test.reset')); }
     root.addEventListener('click', e => {
       const c = e.target.closest('[data-test]'); if (c) { pick(root, c.dataset.test); return; }
+      const d = e.target.closest('[data-diff]'); if (d) { diff = d.dataset.diff; us.set('testDiff', diff); pick(root, cur); return; }
       if (e.target.closest('[data-start]') || e.target.closest('#tStart')) { if (e.target.closest('#tStart')) $('#tArena', root).scrollIntoView({ block: 'center', behavior: 'smooth' }); countdown(root); }
     });
   },

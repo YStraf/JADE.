@@ -8,6 +8,7 @@ import { OFFERS, fmtPrice } from '../data/premium.js';
 import { openAuth } from '../components/auth.js';
 import { openCheckout } from '../components/checkout.js';
 import { go } from '../core/router.js';
+import { isApp, openSite } from '../core/native.js';
 import { pageHead, avatar, banner, titlePill } from '../components/ui.js';
 
 let yearly = true;
@@ -28,12 +29,17 @@ function cards() {
 export default {
   title: () => t('nav.pricing'),
   render() {
+    if (isApp) {
+      const s = subOf();
+      return pageHead('Jade+', esc(t('pricing.sub'))) + '<div class="card app-plus"><div class="app-plus-head"><span class="tag plus-tag">Jade+</span><h3>' + esc(isPlus() ? t('pr.activeUntil', { d: fmtDate(s.until) }) : t('app.plusWeb')) + '</h3><p class="muted">' + esc(t('app.plusWebSub')) + '</p></div><ul class="co-list">' + t('pr.plus.list').split('|').map(f => '<li>' + ic('check') + esc(f) + '</li>').join('') + '</ul><button class="btn primary" data-site>' + ic('ext') + esc(t('app.openSite')) + '</button></div>';
+    }
     return pageHead(esc(t('nav.pricing')), esc(t('pricing.sub'))) + '<div id="prCards">' + cards() + '</div>' +
       '<div class="card section"><h3>' + esc(t('pricing.compare')) + '</h3><div class="table-wrap"><table class="cmp"><thead><tr><th></th><th>' + esc(t('pr.free')) + '</th><th>Jade+</th></tr></thead><tbody>' + C('planRows').map(r => '<tr><td>' + esc(r[0]) + '</td>' + r.slice(1).map(v => '<td>' + (v === 1 ? '<span class="yes">' + ic('check') + '</span>' : v === 0 ? '<span class="no">—</span>' : '<span class="yes">' + esc(v) + '</span>') + '</td>').join('') + '</tr>').join('') + '</tbody></table></div></div>' +
       '<div class="card section"><h3>' + esc(t('pricing.faq')) + '</h3><div class="faq">' + C('payFaq').map(f => '<details><summary>' + esc(f[0]) + '</summary><p>' + esc(f[1]) + '</p></details>').join('') + '</div><p class="inline-note">' + esc(t('pricing.ttc')) + ' <a href="#/legal/cgv">' + esc(t('legal.short.cgv')) + '</a></p></div>';
   },
   mount(root) {
     root.addEventListener('click', e => {
+      if (e.target.closest('[data-site]')) { openSite('formules'); return; }
       const cy = e.target.closest('[data-cycle]'); if (cy) { yearly = cy.dataset.cycle === 'y'; root.querySelector('#prCards').innerHTML = cards(); return; }
       const b = e.target.closest('[data-choose]'); if (!b) return;
       if (b.dataset.choose === 'free') { if (me()) go('routines'); else openAuth('up'); return; }

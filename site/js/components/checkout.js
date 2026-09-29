@@ -9,9 +9,11 @@ import { OFFERS, PAY_LINKS, fmtPrice } from '../data/premium.js';
 import { me } from '../state/account.js';
 import { isPlus, subOf } from '../state/premium.js';
 import { openAuth } from './auth.js';
+import { isApp, openSite } from '../core/native.js';
 
 export function openCheckout(offer) {
   const o = OFFERS[offer]; if (!o) return;
+  if (isApp) { openSite('formules'); return; } // les achats se font uniquement sur le site
   const u = me(); if (!u) { openAuth('up'); return; }
   if (o.kind === 'sub' && isPlus() && subOf().renew) { toast(t('pay.already')); return; }
   const open = !!PAY_LINKS[offer];

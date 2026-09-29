@@ -2,6 +2,7 @@
 import { store, us, session, setUid } from '../core/store.js';
 import { sha256, uidGen } from '../core/dom.js';
 import { emit } from '../core/bus.js';
+import * as cloud from './cloud.js';
 
 export const DEF_PROFILE = {
   bio: '', plan: 'free',
@@ -51,21 +52,29 @@ export async function signup({ pseudo, email, password, birth, terms }) {
   const l = accounts();
   if (l.some(a => a.email === email)) return 'auth.err.emailTaken';
   if (l.some(a => a.pseudo.toLowerCase() === pseudo.toLowerCase()) || DEMO_NAMES.includes(pseudo.toLowerCase())) return 'auth.err.pseudoTaken';
-  const acc = { id: uidGen(), pseudo, email, pw: await sha256(email + ':' + password), birth, created: Date.now(), role: l.length ? 'member' : 'member', banned: false, terms: Date.now() };
+  let id = uidGen();
+  if (cloud.enabled()) { const r = await cloud.signUp(email, password, { pseudo, birth }); if (r.error) return r.error; if (r.confirm) return 'auth.confirmSent'; id = r.user.id; }
+  const acc = { id, pseudo, email, pw: await sha256(email + ':' + password), birth, created: Date.now(), role: l.length ? 'member' : 'member', banned: false, terms: Date.now() };
   l.push(acc); saveAccounts(l);
   migrateGuest(acc.id);
-  loginAs(acc);
+  loginAs(acc); if (cloud.enabled()) cloud.push(acc.id);
   return null;
 }
 export async function login(email, password) {
   email = (email || '').trim().toLowerCase();
+  if (cloud.enabled()) {
+    const r = await cloud.signIn(email, password); if (r.error) return r.error;
+    const l = accounts(); let a = l.find(x => x.id === r.user.id);
+    if (!a) { const m = r.user.user_metadata || {}; a = { id: r.user.id, pseudo: m.pseudo || email.split('@')[0], email, birth: m.birth || '', created: Date.parse(r.user.created_at) || Date.now(), role: 'member', banned: false, terms: Date.now() }; l.push(a); saveAccounts(l); }
+    await cloud.pull(a.id); loginAs(a); return null;
+  }
   const a = accounts().find(x => x.email === email);
   if (!a || a.pw !== await sha256(email + ':' + password)) return 'auth.err.bad';
   if (a.banned) return 'auth.err.banned';
   loginAs(a); return null;
 }
 function loginAs(a) { cur = a; store.set('current', a.id); setUid(a.id); emit('user'); emit('xp'); emit('coins'); }
-export function logout() { cur = null; store.set('current', null); setUid('guest'); emit('user'); emit('xp'); emit('coins'); }
+export function logout() { if (cur && cloud.enabled()) { const id = cur.id; cloud.push(id).finally(() => cloud.signOut()); } cur = null; store.set('current', null); setUid('guest'); emit('user'); emit('xp'); emit('coins'); }
 export async function changePassword(pw) { if (!cur) return; updateAccount({ pw: await sha256(cur.email + ':' + pw) }); }
 export function deleteAccount(id) {
   id = id || (cur && cur.id); if (!id) return;

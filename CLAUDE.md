@@ -26,6 +26,14 @@ refonte Next.js + Supabase (spec-kit) ; `prototype/` est l'ancienne maquette, ne
 `js/state/` (comptes, économie, progression, communauté) · `js/components/` (ui, emblèmes, caisses,
 recherche, cookies, secrets) · `js/pages/<page>.js` (une par route, `render()` + `mount()`).
 
+## Application Windows et serveur
+- `app/` : Electron (npm autorisé ici seulement). Elle affiche le site copié dans `app/renderer/` avec `html.is-app`
+  et `window.jadeNative` (`site/js/core/native.js` → `isApp`, `N`). Détails : `app/README.md`.
+- Achats Jade+ **uniquement sur le site** : dans l'app, `openSite('formules')`.
+- Comptes en ligne : `site/js/data/cloud-config.js` (vide = comptes locaux), `site/js/state/cloud.js`,
+  schéma `supabase/migrations/`, fonctions `supabase/functions/` (tracker, webhook Stripe).
+- Tests d'aim : 3 difficultés (`DIFFS` dans `game.js`), Facile plafonné à Or, Normal à Diamant, Compétitif jusqu'à Jade.
+
 ## Jade+ et skins
 - Offres, prix et liens de paiement : `site/js/data/premium.js` (`PAY_LINKS` vides = paiements fermés). État par compte :
   `site/js/state/premium.js` (`isPlus()`). Jamais de Jade Coins ni de caisses dans une offre payante.
@@ -34,5 +42,5 @@ recherche, cookies, secrets) · `js/pages/<page>.js` (une par route, `render()` 
 ## Vérifier un changement
 - Traductions : `node tools/check-i18n.mjs` (doit afficher 0 manquante partout).
 - Navigateur : `tools/e2e/run.sh smoke fr,en,es,de,it,pl` (0 erreur attendue), puis selon le cas
-  `run.sh flow`, `run.sh showcase` (vitrine + Jade+), `run.sh mobile fr,de,pl`, `run.sh leak es,de,it,pl`. Détails : `tools/e2e/README.md`.
+  `run.sh flow`, `run.sh showcase` (vitrine + Jade+), `run.sh app` (mode application), `run.sh mobile fr,de,pl`, `run.sh leak es,de,it,pl`. Détails : `tools/e2e/README.md`.
 - Le hook `.claude/hooks/session-start.sh` lance le serveur local (port 8765) au démarrage.

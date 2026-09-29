@@ -5,7 +5,7 @@ import { dayKey } from '../core/dom.js';
 import { pop } from '../core/toast.js';
 import { SFX } from '../core/sfx.js';
 import { t } from '../core/i18n.js';
-import { XP_RULES, COIN_RULES, levelFromXP, TESTS, norm, rankOf, BADGES, TIERS, TEST_BOUNDS, TESTS_V } from '../data/game.js';
+import { XP_RULES, COIN_RULES, levelFromXP, TESTS, norm, rankOf, BADGES, TIERS, TEST_BOUNDS, TESTS_V, testScore } from '../data/game.js';
 import { addCoins, inventory } from './economy.js';
 import { profile } from './account.js';
 import { myPostsCount, myChallengeCount } from './community.js';
@@ -117,21 +117,23 @@ export function bestsFor(id) {
 export function bests() { return bestsFor(); }
 export function bestOf(k) { const b = bests()[k]; return b == null ? null : b; }
 export function submitTest(k, val) {
-  const b = bests(); const prev = b[k]; const cfg = TESTS[k];
-  if (!TEST_BOUNDS[k](val)) return { better: false, prev, award: null, invalid: true };
+  const base = k.split('@')[0]; const b = bests(); const prev = b[k]; const cfg = TESTS[base];
+  if (!TEST_BOUNDS[base](val)) return { better: false, prev, award: null, invalid: true };
   const better = prev == null || (cfg.lower ? val < prev : val > prev);
   if (better) { b[k] = val; us.set('bests', b); }
-  markActive(); awardXP('test_day', k + ':' + dayKey(Date.now()), k, { silent: true });
-  let award = null; if (better) award = awardXP('record_test', k + ':' + val, t('test.' + k + '.name'));
+  markActive(); awardXP('test_day', base + ':' + dayKey(Date.now()), base, { silent: true });
+  let award = null; if (better) award = awardXP('record_test', k + ':' + val, t('test.' + base + '.name'));
   emit('xp'); return { better, prev, award };
 }
 
 // ---- Rang ----
-export function aimScore(b = bests()) { const parts = Object.keys(TESTS).map(k => norm(k, b[k])).filter(v => v != null); return parts.length < 3 ? null : parts.reduce((a, c) => a + c, 0) / parts.length; }
+// Moyenne des tests (au moins 3), et plafond : le plus bas des plafonds de difficulté utilisés.
+export function aimInfo(b = bests()) { const parts = Object.keys(TESTS).map(k => testScore(k, b)).filter(Boolean); if (parts.length < 3) return null; return { s: parts.reduce((a, c) => a + c.s, 0) / parts.length, cap: Math.min(...parts.map(p => p.cap)) }; }
+export function aimScore(b = bests()) { const a = aimInfo(b); return a ? a.s : null; }
 export function assiduity() { const days = activeDays(); const now = Date.now(); let n = 0; days.forEach(d => { const [y, m, dd] = d.split('-').map(Number); if (now - new Date(y, m - 1, dd).getTime() < 30 * 864e5) n++; }); const st = streakInfo().n; return Math.min(100, n / 20 * 100) * .6 + Math.min(100, st / 14 * 100) * .4; }
-export function rankPoints() { const a = aimScore(); if (a == null) return null; return Math.round((a * .7 + assiduity() * .3) * 10); }
+export function rankPoints() { const a = aimInfo(); if (!a) return null; return Math.min(a.cap, Math.round((a.s * .7 + assiduity() * .3) * 10)); }
 export function myRank() { return rankOf(rankPoints()); }
-export function skillRanks(b = bests()) { return Object.keys(TESTS).map(k => { const n = norm(k, b[k]); return { k, n, rank: n == null ? null : rankOf(Math.round(n * 10)) }; }); }
+export function skillRanks(b = bests()) { return Object.keys(TESTS).map(k => { const sc = testScore(k, b), n = sc ? sc.s : null; return { k, n, rank: n == null ? null : rankOf(Math.round(n * 10)) }; }); }
 
 // ---- Badges ----
 export function stats() {
