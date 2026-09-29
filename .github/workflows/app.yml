@@ -1,5 +1,7 @@
 # Compile l'installeur Windows de l'application Jade (app/) à chaque changement,
 # et publie une version quand on pousse une étiquette app-v*.
+# Le dépôt s'appelle « JADE. » : Windows refuse un dossier finissant par un point, donc on clone dans C:\jade
+# au lieu d'utiliser actions/checkout (qui travaille dans D:\a\JADE.\JADE.).
 name: Application Windows
 on:
   push:
@@ -12,16 +14,19 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    defaults: { run: { working-directory: app } }
+    defaults: { run: { working-directory: 'C:\jade\app' } }
     steps:
-      - uses: actions/checkout@v4
+      - name: Récupérer le code
+        working-directory: 'C:\'
+        shell: pwsh
+        run: git clone --depth 1 --branch "${{ github.ref_name }}" "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" C:\jade
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm install --no-audit --no-fund
       - run: npm test
       - run: npm run dist
       - uses: actions/upload-artifact@v4
-        with: { name: Jade-Setup, path: app/dist/*.exe, retention-days: 30 }
+        with: { name: Jade-Setup, path: 'C:\jade\app\dist\*.exe', retention-days: 30 }
       - if: startsWith(github.ref, 'refs/tags/app-v')
         uses: softprops/action-gh-release@v2
-        with: { files: app/dist/*.exe }
+        with: { files: 'C:\jade\app\dist\*.exe' }
