@@ -19,11 +19,15 @@ import { openSearch } from './components/search.js';
 import { bindMini } from './components/minicard.js';
 import { renderCookieBar, reopenCookies } from './components/cookies.js';
 import { initIntro, replayIntro } from './components/intro.js';
+import { isApp } from './core/native.js';
+import { startSync } from './state/autosync.js';
+import { autoPush } from './state/cloud.js';
 import { bindSecrets } from './components/secrets.js';
 
 export const NAV = [
   { items: [['', 'home', 'nav.home']] },
   { g: 'nav.g.train', items: [['routines', 'routine', 'nav.routines'], ['tests', 'target', 'nav.tests'], ['progression', 'chart', 'nav.progression'], ['optimisation', 'sliders', 'nav.optimisation']] },
+  ...(isApp ? [{ g: 'nav.g.app', items: [['pc', 'cpu', 'nav.pc'], ['tracker', 'chart', 'nav.tracker']] }] : []),
   { g: 'nav.g.compete', items: [['defis', 'trophy', 'nav.challenges'], ['rangs', 'rank', 'nav.ranks'], ['pass', 'ticket', 'nav.pass']] },
   { g: 'nav.g.community', items: [['forum', 'chat', 'nav.forum'], ['shop', 'bag', 'nav.shop']] },
   { g: 'nav.g.info', items: [['actus', 'news', 'nav.news'], ['securite', 'shield', 'nav.security'], ['formules', 'card', 'nav.pricing'], ['application', 'device', 'nav.app']] },
@@ -40,7 +44,7 @@ function sideHTML() {
 }
 function topHTML() {
   const r = parse(); const u = me();
-  const crumbKey = { '': 'nav.home', routines: 'nav.routines', tests: 'nav.tests', progression: 'nav.progression', optimisation: 'nav.optimisation', defis: 'nav.challenges', rangs: 'nav.ranks', pass: 'nav.pass', forum: 'nav.forum', shop: 'nav.shop', actus: 'nav.news', securite: 'nav.security', formules: 'nav.pricing', application: 'nav.app', profil: 'nav.profile', joueur: 'nav.player', legal: 'nav.legal', admin: 'nav.admin' }[r.name];
+  const crumbKey = { '': 'nav.home', routines: 'nav.routines', tests: 'nav.tests', progression: 'nav.progression', optimisation: 'nav.optimisation', pc: 'nav.pc', tracker: 'nav.tracker', defis: 'nav.challenges', rangs: 'nav.ranks', pass: 'nav.pass', forum: 'nav.forum', shop: 'nav.shop', actus: 'nav.news', securite: 'nav.security', formules: 'nav.pricing', application: 'nav.app', profil: 'nav.profile', joueur: 'nav.player', legal: 'nav.legal', admin: 'nav.admin' }[r.name];
   const group = NAV.find(g => g.items.some(i => i[0] === r.name));
   const L = level();
   const theme = document.documentElement.getAttribute('data-theme');
@@ -123,6 +127,7 @@ function bindShell() {
 
 async function boot() {
   applyMotionPref();
+  if (isApp) document.documentElement.classList.add('is-app');
   initAccount();
   applyTheme(store.get('theme', 'dark'));
   await initLang();
@@ -134,7 +139,8 @@ async function boot() {
   onBus('settings', () => { $('#announce').innerHTML = announceHTML(); });
   await startRouter();
   bindMini(); bindSecrets();
-  initIntro();
+  if (isApp) startSync(); else initIntro();
+  autoPush(() => me() && me().id);
   setTimeout(renderCookieBar, 700);
   // Temps passé sur le site (onglet visible)
   setInterval(() => { if (document.visibilityState !== 'hidden') addMinute(); }, 60000);

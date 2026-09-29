@@ -35,6 +35,23 @@ export const TEST_BOUNDS = { flick: v => v >= 6, precision: v => v >= 6, reactio
 export const REFS = { flick: [16, 40], precision: [17, 50], reaction: [160, 340], tracking: [75, 20], switching: [15, 42] };
 export function norm(k, v) { if (v == null) return null; const [g, b] = REFS[k]; const x = Math.max(0, Math.min(1, (v - b) / (g - b))); return Math.pow(x, 1.5) * 100; }
 
+// Difficultés : facile et normal sont plus accessibles mais plafonnés (Or, Diamant). Seul le mode compétitif mène à Jade.
+export const DIFFS = { easy: { size: 1.5, n: .67, speed: .7, cap: 3 }, normal: { size: 1.2, n: .85, speed: .85, cap: 5 }, hard: { size: 1, n: 1, speed: 1, cap: 11 } };
+export const recKey = (k, d) => (!d || d === 'hard' ? k : k + '@' + d);
+export function testCfg(k, d = 'hard') { const c = TESTS[k], m = DIFFS[d] || DIFFS.hard; return { ...c, size: c.size && Math.round(c.size * m.size), n: c.n && Math.max(5, Math.round(c.n * m.n)), speed: c.speed && c.speed * m.speed }; }
+export function capPts(d) { const next = RANKS[(DIFFS[d] || DIFFS.hard).cap + 1]; return next ? next.min - 1 : 1000; }
+// Meilleure note d'un test toutes difficultés confondues : { s: 0-100, cap: points max } ou null.
+export function testScore(k, b) {
+  let best = null;
+  for (const d of Object.keys(DIFFS)) {
+    let v = b[recKey(k, d)]; if (v == null) continue;
+    const c = TESTS[k]; if (c.lower && c.n) v = v * c.n / testCfg(k, d).n; // temps ramené au nombre de cibles du mode compétitif
+    const n = norm(k, v); const pts = Math.min(n * 10, capPts(d));
+    if (!best || pts > best.s * 10) best = { s: pts / 10, cap: capPts(d) };
+  }
+  return best;
+}
+
 // ---- Rangs ----
 // 12 rangs, 3 divisions (III → I) pour les 10 premiers. Points 0-1000 = 70 % aim + 30 % assiduité.
 export const RANKS = [

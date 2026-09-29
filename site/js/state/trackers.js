@@ -1,3 +1,4 @@
+import { CLOUD } from '../data/cloud-config.js';
 // Statistiques de jeu des widgets CS2, FACEIT et Valorant.
 // Les API officielles (Steam/Leetify, FACEIT Data API, Riot) demandent une clé secrète : elles passeront
 // par le serveur de la refonte (Supabase Edge Functions, voir specs/). En attendant, le site statique
@@ -40,3 +41,12 @@ export function validHandle(game, h) {
   return /^[A-Za-z0-9_-]{3,32}$/.test(h);
 }
 export function shortHandle(h) { const m = String(h).match(/steamcommunity\.com\/(?:id|profiles)\/([^/]+)/); return m ? m[1] : String(h); }
+
+// Vraies stats via le serveur Jade (fonction « tracker », voir supabase/functions) quand il est configuré.
+export async function liveStats(game, handle) {
+  if (!CLOUD.url || !CLOUD.anonKey) return null;
+  try {
+    const r = await fetch(CLOUD.url + '/functions/v1/tracker?game=' + encodeURIComponent(game) + '&id=' + encodeURIComponent(handle), { headers: { apikey: CLOUD.anonKey, Authorization: 'Bearer ' + CLOUD.anonKey } });
+    if (!r.ok) return null; const j = await r.json(); return j && j.matches ? j : null;
+  } catch (e) { return null; }
+}

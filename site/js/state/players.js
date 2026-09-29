@@ -1,6 +1,6 @@
 // Vue unifiée d'un joueur (moi, un autre compte local, ou un joueur de démonstration).
 import { us } from '../core/store.js';
-import { levelFromXP, rankOf, TESTS, norm, ITEM } from '../data/game.js';
+import { levelFromXP, rankOf, TESTS, testScore, ITEM } from '../data/game.js';
 import { DEMO_PLAYERS } from '../data/demo.js';
 import { accounts, me, profile } from './account.js';
 import { isPlus } from './premium.js';
@@ -17,7 +17,7 @@ export function getPlayer(pseudo) {
   const acc = accounts().find(a => a.pseudo.toLowerCase() === p);
   if (acc) {
     const pr = profile(acc.id); const x = us.getFor(acc.id, 'xp', { total: 0 }).total; const b = bestsFor(acc.id);
-    const parts = Object.keys(TESTS).map(k => norm(k, b[k])).filter(v => v != null);
+    const parts = Object.keys(TESTS).map(k => testScore(k, b)).filter(Boolean).map(x => x.s);
     const pts = parts.length >= 3 ? Math.round(parts.reduce((a, c) => a + c, 0) / parts.length * 7) : null;
     const plus = isPlus(acc.id);
     return { plus, id: acc.id, pseudo: acc.pseudo, role: acc.role, banned: acc.banned, style: keepBanner(pr.style, plus, acc.role), bio: pr.bio, prefs: pr.prefs, widgets: pr.widgets, layout: pr.layout, media: id => us.getFor(acc.id, 'wmedia:' + id, ''), xp: x, level: levelFromXP(x), rank: rankOf(pts), rankPoints: pts, sessions: us.getFor(acc.id, 'runs', []).length, streak: null, minutes: us.getFor(acc.id, 'minutes', 0), bests: b, created: acc.created };

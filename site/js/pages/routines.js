@@ -8,17 +8,21 @@ import { ROUTINES, SCEN_LIB, LEVELS, GAMES, SOFTS, TYPES, GOALS, minutesOf, reco
 import { seg, pageHead, empty, noteBox } from '../components/ui.js';
 import { awardXP, markActive } from '../state/progress.js';
 import { me, updateProfile } from '../state/account.js';
+import { N, isApp } from '../core/native.js';
 
 const st = { soft: store.get('soft', 'kovaaks'), lvl: 'all', game: 'all', type: 'all', q: '' };
 const softName = s => s === 'kovaaks' ? "Kovaak's" : 'Aim Lab';
 const copyBtn = s => ' <button class="copy-scen" data-copy="' + esc(s) + '" title="' + esc(t('common.copy')) + '" aria-label="' + esc(t('common.copy')) + ' ' + esc(s) + '">' + ic('copy') + '</button>';
+// App : lance le logiciel directement sur la playlist ou le scénario (liens Steam).
+const playBtn = (r, s) => isApp && r.soft === 'kovaaks' ? ' <button class="copy-scen play-scen" data-launch="' + esc(r.soft) + '" data-scen="' + esc(s) + '" title="' + esc(t('app.launchScen')) + '" aria-label="' + esc(t('app.launchScen')) + ' ' + esc(s) + '">' + ic('play') + '</button>' : '';
+const launchAll = r => isApp ? '<button class="btn small primary launch-btn" data-launch="' + esc(r.soft) + '"' + (r.code ? ' data-code="' + esc(r.code) + '"' : '') + ' data-first="' + esc(scenAlts(r.blocks[0])[0]) + '">' + ic('play') + esc(t('app.launch', { s: softName(r.soft) })) + '</button>' : '';
 function card(r, open) {
   const src = r.code
     ? '<div class="pl-code"><span class="label">' + esc(t('routine.code')) + '</span><code>' + esc(r.code) + '</code><button class="btn small" data-copy="' + esc(r.code) + '">' + ic('copy') + esc(t('routine.copyCode')) + '</button><small class="muted">' + esc(t('routine.codeHow')) + '</small></div>'
     : '<p class="muted small-note">' + ic('info') + esc(t(r.soft === 'aimlab' ? 'routine.aimlabHow' : 'routine.kvkHow')) + '</p>';
   return '<details class="routine" id="r-' + r.id + '"' + (open ? ' open' : '') + '><summary><div><h3>' + esc(routineTitle(r)) + '</h3><div class="tags"><span class="tag jade">' + esc(t('level.' + r.lvl)) + '</span><span class="tag">' + esc(t('game.' + r.game)) + '</span>' + r.types.map(x => '<span class="tag">' + esc(t('type.' + x)) + '</span>').join('') + '</div></div><div class="time">≈ ' + minutesOf(r) + '<small> min</small></div></summary>' +
-    '<div class="body"><p class="rt-note">' + esc(t('rt.n.' + r.focus)) + '</p>' + src + '<ol class="blocks">' + r.blocks.map(b => '<li class="block"><span class="min">' + esc(blockQty(b)) + '</span><span class="scen">' + scenAlts(b).map(s => esc(s) + copyBtn(s)).join('<span class="or">' + esc(t('auth.or')) + '</span>') + '</span></li>').join('') + '</ol>' +
-    '<div class="row-flex" style="margin-top:14px"><button class="btn small primary" data-done="' + r.id + '">' + ic('check') + esc(t('routine.done')) + '</button><button class="btn small" data-copyall="' + r.id + '">' + ic('copy') + esc(t('routine.copyAll')) + '</button><span class="muted small-note">' + esc(softName(r.soft)) + '</span></div></div></details>';
+    '<div class="body"><p class="rt-note">' + esc(t('rt.n.' + r.focus)) + '</p>' + src + '<ol class="blocks">' + r.blocks.map(b => '<li class="block"><span class="min">' + esc(blockQty(b)) + '</span><span class="scen">' + scenAlts(b).map(s => esc(s) + copyBtn(s) + playBtn(r, s)).join('<span class="or">' + esc(t('auth.or')) + '</span>') + '</span></li>').join('') + '</ol>' +
+    '<div class="row-flex" style="margin-top:14px">' + launchAll(r) + '<button class="btn small' + (isApp ? '' : ' primary') + '" data-done="' + r.id + '">' + ic('check') + esc(t('routine.done')) + '</button><button class="btn small" data-copyall="' + r.id + '">' + ic('copy') + esc(t('routine.copyAll')) + '</button><span class="muted small-note">' + esc(softName(r.soft)) + '</span></div></div></details>';
 }
 function library() {
   return '<details class="card lib"><summary><div><h3>' + ic('book') + esc(t('lib.title')) + '</h3><p class="muted">' + esc(t('lib.sub')) + '</p></div>' + ic('plus') + '</summary>' +
@@ -77,6 +81,12 @@ export default {
     $('#wGo', root).onclick = () => planOut(root);
     if ((store.get('plan', null) || {}).goal) planOut(root, true);
     root.addEventListener('click', async e => {
+      const L = e.target.closest('[data-launch]'); if (L && N) {
+        e.preventDefault(); const soft = L.dataset.launch;
+        if (soft === 'kovaaks') await N.launch('kovaaks', L.dataset.code ? { playlist: L.dataset.code } : { scenario: L.dataset.scen || L.dataset.first });
+        else { const code = L.dataset.code || L.dataset.first; try { await navigator.clipboard.writeText(code); } catch (x) { /* ignoré */ } await N.launch('aimlab'); toast(t('app.aimlabCopied', { s: code })); return; }
+        toast(t('app.launching', { s: softName(soft) })); return;
+      }
       const c = e.target.closest('[data-copy]'); if (c) { e.preventDefault(); try { await navigator.clipboard.writeText(c.dataset.copy); toast(t('routine.copied', { s: c.dataset.copy })); } catch (x) { toast(t('common.copyFail')); } return; }
       const a = e.target.closest('[data-copyall]'); if (a) { const r = ROUTINES.find(x => x.id === a.dataset.copyall); try { await navigator.clipboard.writeText((r.code ? r.code + '\n\n' : '') + r.blocks.map(b => scenAlts(b)[0] + ' (' + blockQty(b) + ')').join('\n')); toast(t('routine.copiedAll')); } catch (x) { toast(t('common.copyFail')); } return; }
       const d = e.target.closest('[data-done]'); if (d) { const r = ROUTINES.find(x => x.id === d.dataset.done); markActive(); const res = awardXP('routine', r.id + ':' + dayKey(Date.now()), routineTitle(r)); if (!res) toast(t('routine.alreadyToday')); if (!me()) toast(t('routine.guestNote')); }

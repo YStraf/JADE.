@@ -8,7 +8,7 @@ export const ROUTES = {
   '': 'home', routines: 'routines', tests: 'tests', progression: 'progression', optimisation: 'optimisation',
   defis: 'challenges', rangs: 'ranks', pass: 'pass', forum: 'forum', shop: 'shop',
   actus: 'news', securite: 'security', formules: 'pricing', application: 'app',
-  profil: 'profile', joueur: 'player', legal: 'legal', admin: 'admin',
+  profil: 'profile', joueur: 'player', legal: 'legal', admin: 'admin', pc: 'pc', tracker: 'tracker',
 };
 // Anciens liens du prototype
 const LEGACY = { accueil: '', opti: 'optimisation', tarifs: 'formules', app: 'application', defis: 'defis' };

@@ -9,7 +9,10 @@ import { runs, saveRuns, importFiles, streakInfo, bests } from '../state/progres
 import { skillOf, ROUTINES, routineTitle } from '../data/routines.js';
 import { pageHead, countUp, empty } from '../components/ui.js';
 import { isPlus } from '../state/premium.js';
-import { TESTS, norm } from '../data/game.js';
+import { isApp } from '../core/native.js';
+import { onBus } from '../core/bus.js';
+import { startSync, pickDir, syncDir } from '../state/autosync.js';
+import { TESTS, testScore } from '../data/game.js';
 
 let curScen = null;
 const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -24,7 +27,7 @@ function chart(data) {
 function weekDelta(rs) { const now = Date.now(), W = 6048e5; const c = rs.filter(r => r.date > now - W), p = rs.filter(r => r.date <= now - W && r.date > now - 2 * W); if (!c.length || !p.length) return null; const avg = a => a.reduce((s, r) => s + r.score, 0) / a.length; const a = avg(c), b = avg(p); return (a - b) / b * 100; }
 // Jade+ : analyse des points faibles à partir des records aux tests, et routines conseillées pour la semaine.
 function analysis() {
-  const b = bests(); const sc = Object.keys(TESTS).map(k => [k, norm(k, b[k])]).filter(x => x[1] != null).sort((x, y) => x[1] - y[1]);
+  const b = bests(); const sc = Object.keys(TESTS).map(k => { const x = testScore(k, b); return [k, x ? x.s : null]; }).filter(x => x[1] != null).sort((x, y) => x[1] - y[1]);
   const head = '<div class="section-head"><h3>' + ic('sparkles') + esc(t('ana.title')) + ' <span class="tag plus-tag">Jade+</span></h3></div>';
   if (!isPlus()) return head + '<div class="card ana-lock"><div class="ana-blur" aria-hidden="true">' + ['flick', 'tracking', 'reaction'].map((k, i) => '<div class="li"><span>' + esc(t('test.' + k + '.name')) + '</span><div class="bar"><i style="width:' + (35 + i * 20) + '%"></i></div></div>').join('') + '</div><div class="ana-cta"><b>' + esc(t('ana.lockTitle')) + '</b><p class="muted">' + esc(t('ana.lockText')) + '</p><a class="btn primary small" href="#/formules">' + ic('sparkles') + esc(t('pr.plus.cta')) + '</a></div></div>';
   if (sc.length < 2) return head + '<div class="card"><p class="muted">' + esc(t('ana.needTests')) + '</p><a class="btn small" href="#/tests">' + esc(t('nav.tests')) + '</a></div>';
@@ -63,14 +66,21 @@ async function handle(root, files) { const { added, bad } = await importFiles(fi
 export default {
   title: () => t('nav.progression'),
   render() {
-    return pageHead(esc(t('nav.progression')), esc(t('prog.sub'))) +
+    return pageHead(esc(t('nav.progression')), esc(t('prog.sub'))) + (isApp ? '<div class="card sync-card" id="pSync"></div>' : '' ) + (isApp ? '' :
       '<div class="import"><div class="dropzone" id="drop"><div class="dz-ic">' + ic('upload') + '</div><h3>' + esc(t('prog.drop')) + '</h3><p class="muted">' + esc(t('prog.dropSub')) + '</p><div class="row-flex" style="justify-content:center;margin-top:16px"><button class="btn primary" id="pickFiles">' + esc(t('prog.pickFiles')) + '</button><button class="btn" id="pickFolder">' + esc(t('prog.pickFolder')) + '</button></div>' +
       '<input type="file" id="fileIn" accept=".csv" multiple hidden><input type="file" id="dirIn" webkitdirectory directory multiple hidden>' +
       '<div class="pathbox"><code id="statPath">...\\steamapps\\common\\FPSAimTrainer\\FPSAimTrainer\\stats</code><button class="btn tiny" id="copyPath">' + esc(t('common.copy')) + '</button></div></div>' +
-      '<div class="card"><h3>' + esc(t('prog.where')) + '</h3><ol class="steps"><li>' + esc(t('prog.where1')) + '</li><li>' + esc(t('prog.where2')) + '</li><li>' + esc(t('prog.where3')) + '</li></ol><p class="inline-note">' + esc(t('prog.browserNote')) + '</p><p class="inline-note">' + esc(t('prog.rewards')) + '</p></div></div>' +
-      '<div class="section" id="pAna"></div><div class="streak-card card" id="pStreak"></div><div id="pOut"></div><div class="section" id="pSkills"></div>';
+      '<div class="card"><h3>' + esc(t('prog.where')) + '</h3><ol class="steps"><li>' + esc(t('prog.where1')) + '</li><li>' + esc(t('prog.where2')) + '</li><li>' + esc(t('prog.where3')) + '</li></ol><p class="inline-note">' + esc(t('prog.browserNote')) + '</p><p class="inline-note">' + esc(t('prog.rewards')) + '</p></div></div>'
+      ) + '<div class=\"section\" id=\"pAna\"></div><div class="streak-card card" id="pStreak"></div><div id="pOut"></div><div class="section" id="pSkills"></div>';
   },
   mount(root) {
+    if (isApp) {
+      const card = () => { const d = syncDir(); $('#pSync', root).innerHTML = '<div class="sync-ic' + (d ? ' on' : '') + '">' + ic(d ? 'check' : 'warn') + '</div><div><b>' + esc(t(d ? 'sync.on' : 'sync.off')) + '</b><p class="muted small-note">' + esc(d || t('sync.offSub')) + '</p></div><button class="btn small' + (d ? ' ghost' : ' primary') + '" id="syncPick">' + ic('upload') + esc(t(d ? 'sync.change' : 'sync.pick')) + '</button>'; };
+      card(); startSync().then(card);
+      root.addEventListener('click', async e => { if (e.target.closest('#syncPick')) { await pickDir(); card(); paint(root); } });
+      const off = onBus('runs', () => { if (!root.isConnected) return off(); paint(root); });
+      paint(root); return;
+    }
     const drop = $('#drop', root);
     $('#pickFiles', root).onclick = () => $('#fileIn', root).click();
     $('#pickFolder', root).onclick = () => $('#dirIn', root).click();
