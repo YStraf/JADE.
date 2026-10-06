@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ez.</title>
+<meta name="description" content="Builds, tier list, perks, maps, réglages et tips pour Arena Breakout: Infinite (PC).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2312151a'/%3E%3Ctext x='4' y='24' font-family='Arial' font-weight='900' font-size='20' fill='%23e7e9ec'%3EEz%3C/text%3E%3Crect x='25' y='20' width='4' height='4' fill='%23e3a646'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: barre d'onglets façon HUD de raid, une colonne de contenu, données en grilles serrées */
+:root{
+  --bg:#12151a; --panel:#191d24; --panel-2:#20252e; --line:#2c323d;
+  --fg:#e7e9ec; --muted:#8e97a5; --accent:#e3a646; --accent-ink:#1a1408;
+  --s:#e3a646; --a:#7fb3d5; --b:#93a58a; --c:#7a808b;
+  --good:#6fbf8a; --warn:#e3a646; --bad:#e06c5a;
+  --f-display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  --bg:#eef0f2; --panel:#ffffff; --panel-2:#f4f5f7; --line:#d6dae0;
+  --fg:#15181d; --muted:#5b6370; --accent:#a8690f; --accent-ink:#fff8ec;
+  --s:#a8690f; --a:#2f6f99; --b:#4f6a43; --c:#6a707a;
+  --good:#2f8a52; --warn:#a8690f; --bad:#b9412f; color-scheme:light }}
+:root[data-theme="light"]{
+  --bg:#eef0f2; --panel:#ffffff; --panel-2:#f4f5f7; --line:#d6dae0;
+  --fg:#15181d; --muted:#5b6370; --accent:#a8690f; --accent-ink:#fff8ec;
+  --s:#a8690f; --a:#2f6f99; --b:#4f6a43; --c:#6a707a;
+  --good:#2f8a52; --warn:#a8690f; --bad:#b9412f; color-scheme:light }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body);margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:20px 64px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding-block:8px 18px;border-bottom:1px solid var(--line)}
+.brand{font:800 56px/0.9 var(--f-display);letter-spacing:-.01em}
+.brand span{color:var(--accent)}
+.sub{color:var(--muted);font-size:13px;max-width:52ch}
+.season{font:500 12px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.season b{color:var(--accent);font-weight:500}
+.theme{margin-top:8px;font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;background:none;border:1px solid var(--line);color:var(--muted);border-radius:4px;padding:3px 8px;cursor:pointer}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:24px;scrollbar-width:thin}
+nav.tabs button{font:700 17px var(--f-display);text-transform:uppercase;letter-spacing:.06em;background:none;border:0;color:var(--muted);padding:8px 14px;border-radius:6px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--accent-ink);background:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+h2{font:800 32px/1.05 var(--f-display);text-transform:uppercase;margin:0 0 6px;text-wrap:balance}
+.lede{color:var(--muted);margin:0 0 20px;max-width:68ch}
+.label{font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{font:600 13px var(--f-body);border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+
+/* Builds */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:-6px 0 16px}
+.input,.select{font:500 14px var(--f-body);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0}
+.input{flex:1 1 200px}
+.btn{font:700 15px var(--f-display);text-transform:uppercase;letter-spacing:.05em;border:1px solid var(--accent);background:none;color:var(--accent);padding:7px 12px;border-radius:6px;cursor:pointer}
+.btn.solid{background:var(--accent);color:var(--accent-ink)}
+.count{font:500 12px var(--f-mono);color:var(--muted);margin:0 0 10px}
+.builds{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.build{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:10px;min-width:0}
+.build.hl{outline:2px solid var(--accent);outline-offset:2px}
+.build-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.gun{font:800 24px/1 var(--f-display);text-transform:uppercase}
+.bname{color:var(--muted);font-size:13px}
+.price{font:500 13px var(--f-mono);color:var(--accent);white-space:nowrap;font-variant-numeric:tabular-nums}
+.star{background:none;border:0;cursor:pointer;font-size:20px;line-height:1;color:var(--muted);padding:0 0 0 6px;vertical-align:-2px}
+.star[aria-pressed="true"]{color:var(--accent)}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;font-size:12px}
+.bar{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.bars .v{font:500 12px var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;min-width:2ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;background:var(--panel-2);color:var(--muted)}
+.tag.ld{color:var(--accent)}
+.code{display:flex;gap:6px;align-items:center;background:var(--panel-2);border-radius:6px;padding:6px 6px 6px 10px;min-width:0}
+.code code{font:500 12px var(--f-mono);flex:1;min-width:0;overflow-x:auto;white-space:nowrap;user-select:all}
+.copy{font:700 13px var(--f-display);text-transform:uppercase;letter-spacing:.05em;border:0;background:var(--accent);color:var(--accent-ink);padding:5px 10px;border-radius:4px;cursor:pointer;flex:none}
+.note{font-size:13px;color:var(--muted)}
+.empty{color:var(--muted);padding:20px 0}
+
+/* Tier list */
+.tier{display:grid;grid-template-columns:72px 1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:10px;background:var(--panel)}
+.tier .t{display:grid;place-items:center;font:800 40px var(--f-display);color:var(--bg)}
+.tier .guns{display:flex;flex-wrap:wrap;gap:8px;padding:12px;min-width:0}
+.pill{background:var(--panel-2);border-radius:6px;padding:6px 10px;display:grid;line-height:1.25;border:1px solid transparent;color:inherit;font:inherit;text-align:left}
+button.pill{cursor:pointer}
+button.pill:hover{border-color:var(--accent)}
+.pill b{font:700 17px var(--f-display);text-transform:uppercase}
+.pill small{color:var(--muted);font-size:12px}
+.pill .has{color:var(--accent);font:500 10px var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
+.t-S{background:var(--s)} .t-A{background:var(--a)} .t-B{background:var(--b)} .t-C{background:var(--c)}
+
+/* Perks */
+.perk-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px}
+@media (max-width:760px){.perk-grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+.panel h3{font:800 22px/1 var(--f-display);text-transform:uppercase;margin:0 0 10px}
+.alloc{display:grid;gap:10px}
+.skill{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
+.skill b{font:700 18px var(--f-display);text-transform:uppercase}
+.pips{display:flex;gap:4px}
+.pips i{width:22px;height:6px;border-radius:2px;background:var(--panel-2)}
+.pips i.on{background:var(--accent)}
+.skill p{grid-column:1/-1;margin:0;color:var(--muted);font-size:13px}
+.total{font:500 13px var(--f-mono);color:var(--muted);margin-top:6px}
+.why{margin:12px 0 0;padding-left:18px;color:var(--fg);font-size:14px}
+.why li+li{margin-top:4px}
+.dict{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 16px;margin-top:20px}
+.dict div{font-size:13px;color:var(--muted)}
+.dict b{color:var(--fg);font-weight:600}
+
+/* Maps */
+.maps{display:grid;gap:16px}
+.map{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
+@media (max-width:760px){.map{grid-template-columns:1fr}}
+.slot{aspect-ratio:4/3;max-width:100%;border:1px dashed var(--line);border-radius:6px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:13px;background:var(--panel-2);overflow:hidden;position:relative;cursor:pointer}
+.slot img{width:100%;height:100%;object-fit:cover}
+.slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.map h3{font:800 28px/1 var(--f-display);text-transform:uppercase;margin:0}
+.stats{display:flex;flex-wrap:wrap;gap:18px;margin:10px 0 12px}
+.stat .n{font:700 26px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.risk{display:inline-block;font:500 11px var(--f-mono);text-transform:uppercase;padding:2px 7px;border-radius:4px;border:1px solid currentColor;margin-left:8px;vertical-align:middle}
+.risk.hi{color:var(--bad)} .risk.mid{color:var(--warn)} .risk.lo{color:var(--good)}
+.spots{width:100%;border-collapse:collapse;font-size:14px}
+.spots th{text-align:left;font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.spots td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap{overflow-x:auto}
+.loot{display:flex;gap:2px}
+.loot i{width:10px;height:10px;border-radius:2px;background:var(--panel-2)}
+.loot i.on{background:var(--accent)}
+.tip{margin-top:10px;font-size:13px;color:var(--muted)}
+.tip b{color:var(--fg)}
+
+/* Réglages / checklists */
+.cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;align-items:start}
+@media (max-width:380px){.cols{grid-template-columns:1fr}}
+.check{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);cursor:pointer}
+.check:first-of-type{border-top:0}
+.check input{margin:3px 0 0;accent-color:var(--accent);width:16px;height:16px}
+.check b{font-weight:600}
+.check .val{font:500 12px var(--f-mono);color:var(--accent);margin-left:6px;white-space:nowrap}
+.check small{grid-column:2;color:var(--muted);font-size:13px}
+.check:has(input:checked) b{color:var(--muted);text-decoration:line-through}
+.progress{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+.progress .bar{flex:1 1 160px;height:8px}
+.progress span{font:500 13px var(--f-mono);color:var(--muted);white-space:nowrap}
+
+/* Tips */
+.tipday{background:var(--panel);border:1px solid var(--accent);border-radius:8px;padding:14px 16px;margin-bottom:18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.tipday p{margin:4px 0 0}
+.tipday div{flex:1 1 240px}
+.tips{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.tipcard{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:6px;align-content:start}
+.tipcard b{font:700 19px/1.1 var(--f-display);text-transform:uppercase}
+.tipcard p{margin:0;color:var(--muted);font-size:14px}
+.calc{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;align-items:end}
+.calc label{display:grid;gap:4px}
+.calc .input{width:100%}
+.result{font:700 30px/1 var(--f-display);color:var(--accent);font-variant-numeric:tabular-nums;margin-top:14px}
+.verdict{font-size:13px;color:var(--muted);margin-top:4px}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px 16px;margin-top:12px}
+.gloss div{font-size:13px;color:var(--muted)}
+.gloss b{color:var(--fg);font-weight:600}
+.sub-h{font:800 24px/1 var(--f-display);text-transform:uppercase;margin:28px 0 12px}
+
+/* Armure */
+.matrix{border-collapse:collapse;font:500 13px var(--f-mono);min-width:440px;width:100%}
+.matrix th,.matrix td{padding:8px 10px;text-align:center;border:1px solid var(--line)}
+.matrix th{color:var(--muted);font-weight:500}
+.m-y{background:color-mix(in srgb,var(--good) 30%,transparent)}
+.m-p{background:color-mix(in srgb,var(--warn) 30%,transparent)}
+.m-n{background:color-mix(in srgb,var(--bad) 24%,transparent)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:6px}
+.zones{display:grid;gap:10px}
+.zone{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:baseline;font-size:14px}
+.zone b{font:700 17px var(--f-display);text-transform:uppercase}
+.zone span{color:var(--muted)}
+
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+footer a{color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.build,.pill{transition:transform .15s}.build:hover{transform:translateY(-2px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">Ez<span>.</span></div>
+      <div class="sub">Builds, perks, maps, réglages et tips pour Arena Breakout: Infinite (PC). Tu copies le code, tu l'importes dans le Gunsmith, tu pars en raid.</div>
+    </div>
+    <div class="season">Saison 7 · <b>Utopia</b><br>Normal ≤ T4 · Lockdown ≤ T5<br><button class="theme" id="themeBtn" type="button">Thème : auto</button></div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="builds">Builds</button>
+    <button role="tab" aria-selected="false" data-tab="tier">Tier list</button>
+    <button role="tab" aria-selected="false" data-tab="perks">Perks</button>
+    <button role="tab" aria-selected="false" data-tab="maps">Maps</button>
+    <button role="tab" aria-selected="false" data-tab="settings">Réglages</button>
+    <button role="tab" aria-selected="false" data-tab="tips">Tips</button>
+    <button role="tab" aria-selected="false" data-tab="armor">Armure</button>
+    <button role="tab" aria-selected="false" data-tab="raid">Pré-raid</button>
+  </nav>
+
+  <!-- BUILDS -->
+  <section id="builds" role="tabpanel">
+    <h2>Builds</h2>
+    <p class="lede">Codes d'atelier de la saison 7. Recul V/H : plus c'est haut, moins l'arme bouge. Le prix est une estimation de build complet, il bouge avec le marché. Clique ☆ pour garder un build en favori.</p>
+    <div class="filters" id="buildFilters">
+      <button class="chip" aria-pressed="true" data-f="all">Tout</button>
+      <button class="chip" aria-pressed="false" data-f="budget">Budget ≤ 200k</button>
+      <button class="chip" aria-pressed="false" data-f="zero">Zero recoil</button>
+      <button class="chip" aria-pressed="false" data-f="ld">Lockdown</button>
+      <button class="chip" aria-pressed="false" data-f="556">5.56 (A2)</button>
+      <button class="chip" aria-pressed="false" data-f="smg">SMG</button>
+      <button class="chip" aria-pressed="false" data-f="fav">★ Favoris</button>
+    </div>
+    <div class="toolbar">
+      <input class="input" id="buildSearch" type="search" placeholder="Chercher une arme (AK, P90…)" aria-label="Chercher une arme">
+      <select class="select" id="buildSort" aria-label="Trier les builds">
+        <option value="">Tri par défaut</option>
+        <option value="p">Prix croissant</option>
+        <option value="v">Meilleur recul V</option>
+        <option value="h">Meilleur recul H</option>
+        <option value="e">Meilleure ergo</option>
+      </select>
+      <button class="btn solid" id="randomBuild" type="button">Build au hasard</button>
+    </div>
+    <p class="count" id="buildCount"></p>
+    <div class="builds" id="buildList"></div>
+    <p class="note" style="margin-top:14px">Les codes viennent d'ABI Builder. Un code peut casser après un patch : si l'import échoue, monte les pièces à la main depuis la fiche du build.</p>
+  </section>
+
+  <!-- TIER -->
+  <section id="tier" role="tabpanel" hidden>
+    <h2>Tier list S7</h2>
+    <p class="lede">Classement compilé à partir de plusieurs tier lists de la saison 7, pondéré pour le Lockdown. Le A545 est annoncé par les devs au niveau du U191 et du H416. Les armes marquées « builds » t'emmènent vers leurs codes.</p>
+    <div id="tierList"></div>
+  </section>
+
+  <!-- PERKS -->
+  <section id="perks" role="tabpanel" hidden>
+    <h2>Perks (Mastery)</h2>
+    <p class="lede">12 points, 6 compétences maximum, 3 niveaux chacune. Quatre compétences à 3 points valent mieux que six éparpillées.</p>
+    <div class="filters" id="modeFilters">
+      <button class="chip" aria-pressed="true" data-m="solo">Solo</button>
+      <button class="chip" aria-pressed="false" data-m="duo">Duo</button>
+    </div>
+    <div class="filters" id="styleFilters">
+      <button class="chip" aria-pressed="true" data-s="aggro">Agressif PvP</button>
+      <button class="chip" aria-pressed="false" data-s="loot">Loot / discret</button>
+      <button class="chip" aria-pressed="false" data-s="budget">Run budget</button>
+    </div>
+    <div class="perk-grid">
+      <div class="panel">
+        <div class="label" id="presetLabel">Solo · Agressif PvP</div>
+        <div class="alloc" id="alloc" style="margin-top:12px"></div>
+        <div class="total" id="total"></div>
+      </div>
+      <div class="panel">
+        <div class="label">Pourquoi ce choix</div>
+        <ul class="why" id="why"></ul>
+      </div>
+    </div>
+    <div class="dict" id="dict"></div>
+    <p class="note" style="margin-top:14px">Fire-Retardant Material réduit les « dégâts normaux » subis : lis l'infobulle en jeu. Si ça couvre les balles, il passe devant Marathon. Les Season Core Mastery (Acoustic Earpads, Tactical Belt, Hidden Compartment) se débloquent en cours de saison.</p>
+  </section>
+
+  <!-- MAPS -->
+  <section id="maps" role="tabpanel" hidden>
+    <h2>Maps</h2>
+    <p class="lede">Spots de loot, risque et chiffres clés par map. Clique un cadre pour afficher ta propre capture de la map (elle reste dans ton navigateur). Envoie-moi tes images et je les intègre au site pour de bon.</p>
+    <div class="filters" id="riskFilters">
+      <button class="chip" aria-pressed="true" data-r="all">Toutes</button>
+      <button class="chip" aria-pressed="false" data-r="mid">Risque moyen</button>
+      <button class="chip" aria-pressed="false" data-r="hi">Risque élevé</button>
+    </div>
+    <div class="maps" id="mapList"></div>
+  </section>
+
+  <!-- RÉGLAGES -->
+  <section id="settings" role="tabpanel" hidden>
+    <h2>Réglages à ne pas oublier</h2>
+    <p class="lede">Ce qu'il faut vérifier une fois dans le jeu et sur ton PC. Coche au fur et à mesure : ta progression reste enregistrée dans ton navigateur. Les noms d'options peuvent changer un peu selon la langue du jeu et les patchs.</p>
+    <div class="progress"><div class="bar"><i id="setBar" style="width:0%"></i></div><span id="setCount"></span><button class="btn" id="setReset" type="button">Tout décocher</button></div>
+    <div class="cols" id="settingsList"></div>
+  </section>
+
+  <!-- TIPS -->
+  <section id="tips" role="tabpanel" hidden>
+    <h2>Tips</h2>
+    <p class="lede">Les réflexes qui font la différence entre un raid rentable et un retour au menu à poil.</p>
+    <div class="tipday">
+      <div><div class="label">Tip du raid</div><p id="tipOfDay"></p></div>
+      <button class="btn" id="tipNext" type="button">Un autre</button>
+    </div>
+    <div class="filters" id="tipFilters"></div>
+    <div class="tips" id="tipList"></div>
+
+    <h3 class="sub-h">Calculette loot</h3>
+    <div class="panel">
+      <p class="note" style="margin:0 0 12px">Ce qui compte, c'est la valeur <b>par case</b> : un objet cher mais énorme peut valoir moins que trois petits objets. Entre le prix de revente et la taille de l'objet.</p>
+      <div class="calc">
+        <label><span class="label">Prix (k)</span><input class="input" id="cPrice" type="number" min="0" step="1" value="60" inputmode="numeric"></label>
+        <label><span class="label">Largeur</span><input class="input" id="cW" type="number" min="1" max="10" value="2" inputmode="numeric"></label>
+        <label><span class="label">Hauteur</span><input class="input" id="cH" type="number" min="1" max="10" value="2" inputmode="numeric"></label>
+        <label><span class="label">Seuil perso (k / case)</span><input class="input" id="cMin" type="number" min="0" value="10" inputmode="numeric"></label>
+      </div>
+      <div class="result" id="cOut"></div>
+      <div class="verdict" id="cVerdict"></div>
+    </div>
+
+    <h3 class="sub-h">Lexique</h3>
+    <div class="gloss" id="gloss"></div>
+  </section>
+
+  <!-- ARMURE -->
+  <section id="armor" role="tabpanel" hidden>
+    <h2>Armure &amp; munitions</h2>
+    <p class="lede">Munitions et armures ont un niveau de 1 à 6. La règle de base : ta munition doit avoir un niveau au moins égal à la classe de l'armure visée. Ce tableau est une règle générale ; la durabilité de l'armure et la munition exacte changent le résultat.</p>
+    <div class="panel">
+      <div class="tablewrap"><table class="matrix" id="matrix"></table></div>
+      <div class="legend"><span><i class="m-y"></i>Traverse presque toujours</span><span><i class="m-p"></i>Traverse parfois, dégâts réduits</span><span><i class="m-n"></i>Bloquée, l'armure s'use</span></div>
+    </div>
+    <div class="perk-grid" style="margin-top:16px">
+      <div class="panel">
+        <h3>Où viser</h3>
+        <div class="zones" id="zones"></div>
+      </div>
+      <div class="panel">
+        <h3>À retenir</h3>
+        <ul class="why" id="armorRules"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRÉ-RAID -->
+  <section id="raid" role="tabpanel" hidden>
+    <h2>Checklist pré-raid</h2>
+    <p class="lede">30 secondes avant de lancer le matchmaking. Coche, pars, et remets à zéro au retour.</p>
+    <div class="progress"><div class="bar"><i id="raidBar" style="width:0%"></i></div><span id="raidCount"></span><button class="btn" id="raidReset" type="button">Nouveau raid</button></div>
+    <div class="cols" id="raidList"></div>
+  </section>
+
+  <footer>
+    Données compilées en octobre 2026 depuis
+    <a href="https://abibuilder.com/guides/s7-builds" target="_blank" rel="noopener">ABI Builder</a>,
+    <a href="https://timesaver.gg/blog/arena-breakout-infinite-best-guns-season-7" target="_blank" rel="noopener">Timesaver.gg</a>,
+    <a href="https://www.mmoexp.com/News/arena-breakout-infinite-season-7-weapon-tier-list-and-best-loadouts-top-guns-for-lockdown-and-forbidden.html" target="_blank" rel="noopener">MMOexp</a>
+    et les guides de maps d'arenabreakout-infinite.com. Chiffres communautaires, à vérifier en jeu après chaque patch.
+    Ez. est un site de fan, sans lien avec MoreFun Studios ni Tencent.
+  </footer>
+</div>
+
+<script>
+/* ---------- Stockage local (préfixe ez:) ---------- */
+const store={
+  get(k,d){try{const v=localStorage.getItem("ez:"+k);return v==null?d:JSON.parse(v)}catch(_){return d}},
+  set(k,v){try{localStorage.setItem("ez:"+k,JSON.stringify(v))}catch(_){}}
+};
+const $=id=>document.getElementById(id);
+const pressOnly=(group,el)=>group.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===el));
+
+/* ---------- Thème ---------- */
+const THEMES=["auto","dark","light"],THEMENAME={auto:"auto",dark:"sombre",light:"clair"};
+let theme=store.get("theme","auto");
+function applyTheme(){
+  if(theme==="auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.dataset.theme=theme;
+  $("themeBtn").textContent="Thème : "+THEMENAME[theme];
+}
+$("themeBtn").addEventListener("click",()=>{theme=THEMES[(THEMES.indexOf(theme)+1)%3];store.set("theme",theme);applyTheme()});
+applyTheme();
+
+/* ---------- Builds ---------- */
+const BUILDS=[
+ {w:"AK-12",n:"Lockdown AK12",p:250,v:83,h:70,e:51,code:"Mod Gun-3frmQU2ebDVDlP4Mb",t:["ld","meta"],cal:"5.45"},
+ {w:"AK-12",n:"AK12 Zero Recoil",p:370,v:85,h:75,e:50,code:"3frmQU2ebDVDlP4Tf",t:["ld","zero","meta"],cal:"5.45"},
+ {w:"AK-12",n:"AK12 Budget S7",p:224,v:79,h:66,e:49,code:"Armas Modificadas-3fFj3hAqjqsoxP4rP",t:["ld"],cal:"5.45"},
+ {w:"A545",n:"A545 Zero Recoil",p:430,v:83,h:75,e:63,code:"3frmQU2ebDVDlP4Rf",t:["zero","meta"],cal:"5.45"},
+ {w:"A545",n:"A545 S7 Meta",p:570,v:87,h:81,e:61,code:"Mod Gun-3frmQU2ebDVDlP4hf",t:["zero","meta"],cal:"5.45"},
+ {w:"AK-102",n:"AK-102 Budget",p:100,v:75,h:62,e:52,code:"3frmQU2ebDVDlP4Wf",t:["ld","zero"],cal:"5.56"},
+ {w:"AK-102",n:"AK-102 Full",p:390,v:89,h:85,e:57,code:"3frmQU2ebDVDlP4uf",t:["ld","zero"],cal:"5.56"},
+ {w:"M4A1",n:"M4 Budget",p:160,v:80,h:70,e:48,code:"Armas Modificadas-3fFj3hAqjqsoxP4I4",t:["ld"],cal:"5.56"},
+ {w:"M4A1",n:"M4A1 All-Rounder",p:330,v:89,h:79,e:56,code:"Mod Gun-3fQnDljWViWozP4yP",t:["ld","zero","meta"],cal:"5.56"},
+ {w:"M4A1",n:"M4A1 Meta",p:450,v:84,h:76,e:62,code:"Mod Gun-3frmQU2ebDVDlP4jf",t:["zero","meta"],cal:"5.56"},
+ {w:"FAMAS",n:"FAMAS Budget",p:120,v:82,h:57,e:53,code:"3frmQU2ebDVDlP4Cf",t:["ld","zero"],cal:"5.56"},
+ {w:"FAMAS",n:"Full Opt Famas",p:380,v:84,h:64,e:48,code:"Mod Gun-3fUf7o63Z1TyAP4Rb",t:["meta"],cal:"5.56"},
+ {w:"FAMAS",n:"FAMAS Meta",p:480,v:90,h:66,e:48,code:"Mod Gun-3frmQU2ebDVDlP44f",t:["zero","meta"],cal:"5.56"},
+ {w:"H416",n:"HK416 Budget",p:280,v:82,h:62,e:68,code:"Mod Gun-3frmQU2ebDVDlP4Lf",t:["meta"],cal:"5.56"},
+ {w:"H416",n:"HK416 Zero Recoil",p:600,v:91,h:78,e:66,code:"3frmQU2ebDVDlP4Xf",t:["zero","meta"],cal:"5.56"},
+ {w:"AUG",n:"AUG Budget",p:170,v:74,h:64,e:69,code:"3frmQU2ebDVDlP4if",t:["ld"],cal:"5.56"},
+ {w:"AR-57",n:"AR-57 Budget",p:180,v:80,h:68,e:57,code:"3frmQU2ebDVDlP4lf",t:["ld","zero","meta"],cal:"5.7"},
+ {w:"AR-57",n:"AR-57 Meta",p:600,v:88,h:89,e:58,code:"3frmQU2ebDVDlP4Vf",t:["ld","zero","meta"],cal:"5.7"},
+ {w:"T951",n:"T951 Budget",p:120,v:84,h:64,e:57,code:"3frmQU2ebDVDlP4Bf",t:["ld"],cal:"5.8"},
+ {w:"T951",n:"T951 Meta",p:300,v:89,h:74,e:48,code:"3frmQU2ebDVDlP4Sf",t:["ld","meta"],cal:"5.8"},
+ {w:"FAL",n:"FAL Budget",p:150,v:69,h:64,e:48,code:"Mod Gun-3frmQU2ebDVDlP42f",t:["ld"],cal:"7.62x51"},
+ {w:"P90",n:"P90 Leg Meta",p:220,v:80,h:81,e:70,code:"3frmQU2ebDVDlP48f",t:["ld","zero","smg","meta"],cal:"5.7"},
+ {w:"P90",n:"P90 Full",p:540,v:87,h:90,e:76,code:"Mod Gun-3frmQU2ebDVDlP4lb",t:["zero","smg","meta"],cal:"5.7"},
+ {w:"MPX",n:"MPX Dum-Dum S7",p:450,v:86,h:80,e:66,code:"Mod Gun-3frmQU2ebDVDlP4zf",t:["ld","zero","smg"],cal:"9x19"},
+ {w:"Vector 45",n:"Vector Budget",p:120,v:75,h:69,e:60,code:"3frmQU2ebDVDlP4nf",t:["ld","smg"],cal:".45"},
+ {w:"M16",n:"M16 Budget",p:250,v:78,h:62,e:50,code:"3frmQU2ebDVDlP41f",t:["ld"],cal:"5.56"}
+];
+const TAGLABEL={ld:"Lockdown",zero:"Zero recoil",meta:"Meta",smg:"SMG"};
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,"");
+let bFilter="all",bQuery="",bSort="",favs=new Set(store.get("favs",[])),hl=null;
+
+function visibleBuilds(){
+  const q=norm(bQuery);
+  let keep=BUILDS.filter(b=>
+    (bFilter==="all"||(bFilter==="budget"&&b.p<=200)||(bFilter==="556"&&b.cal==="5.56")||(bFilter==="fav"&&favs.has(b.code))||b.t.includes(bFilter))
+    &&(!q||norm(b.w+b.n+b.cal).includes(q)));
+  if(bSort==="p") keep=[...keep].sort((a,b)=>a.p-b.p);
+  else if(bSort) keep=[...keep].sort((a,b)=>b[bSort]-a[bSort]);
+  return keep;
+}
+function renderBuilds(){
+  const keep=visibleBuilds();
+  $("buildCount").textContent=`${keep.length} build${keep.length>1?"s":""}`;
+  $("buildList").innerHTML=keep.length?keep.map(b=>`
+   <article class="build${hl===b.code?" hl":""}" data-code="${b.code}">
+     <div class="build-head"><div><div class="gun">${b.w}</div><div class="bname">${b.n} · ${b.cal}</div></div>
+       <div class="price">~${b.p}k<button class="star" aria-pressed="${favs.has(b.code)}" aria-label="Favori ${b.n}" data-fav="${b.code}">${favs.has(b.code)?"★":"☆"}</button></div></div>
+     <div class="bars">
+       <span>Recul V</span><div class="bar"><i style="width:${b.v}%"></i></div><span class="v">${b.v}</span>
+       <span>Recul H</span><div class="bar"><i style="width:${b.h}%"></i></div><span class="v">${b.h}</span>
+       <span>Ergo</span><div class="bar"><i style="width:${b.e}%"></i></div><span class="v">${b.e}</span>
+     </div>
+     <div class="tags">${b.t.map(t=>`<span class="tag ${t==="ld"?"ld":""}">${TAGLABEL[t]}</span>`).join("")}</div>
+     <div class="code"><code>${b.code}</code><button class="copy" data-code="${b.code}">Copier</button></div>
+   </article>`).join(""):`<p class="empty">${bFilter==="fav"?"Aucun favori pour l'instant : clique ☆ sur un build.":"Aucun build ne correspond."}</p>`;
+}
+$("buildList").addEventListener("click",e=>{
+  const star=e.target.closest(".star");
+  if(star){const c=star.dataset.fav;favs.has(c)?favs.delete(c):favs.add(c);store.set("favs",[...favs]);renderBuilds();return}
+  const btn=e.target.closest(".copy"); if(!btn) return;
+  const done=()=>{btn.textContent="Copié";setTimeout(()=>btn.textContent="Copier",1400)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(btn.previousElementSibling);const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="Ctrl+C"};
+  try{navigator.clipboard.writeText(btn.dataset.code).then(done,fallback)}catch(_){fallback()}
+});
+$("buildFilters").addEventListener("click",e=>{
+  const c=e.target.closest(".chip"); if(!c) return;
+  pressOnly($("buildFilters"),c); bFilter=c.dataset.f; hl=null; renderBuilds();
+});
+$("buildSearch").addEventListener("input",e=>{bQuery=e.target.value;hl=null;renderBuilds()});
+$("buildSort").addEventListener("change",e=>{bSort=e.target.value;renderBuilds()});
+$("randomBuild").addEventListener("click",()=>{
+  const pool=visibleBuilds().length?visibleBuilds():BUILDS;
+  let pick; do{pick=pool[Math.floor(Math.random()*pool.length)]}while(pool.length>1&&pick.code===hl);
+  hl=pick.code; renderBuilds();
+  document.querySelector(`.build[data-code="${CSS.escape(hl)}"]`)?.scrollIntoView({behavior:"smooth",block:"center"});
+});
+
+/* ---------- Tier list ---------- */
+const TIERS=[
+ ["S",[["A545","Nouveau, top tier"],["H416","Laser malgré le nerf"],["AK-12","Roi du Lockdown"],["U191","DMR premium"],["P90","Meilleur SMG"],["M24","One-tap casque T6"]]],
+ ["A",[["AR-57","S en Lockdown"],["FAL + kit S7","Buff + recoil kit"],["AK-102","Prix / perf"],["T951","Débutant idéal"],["SJ16","One-shot longue portée"],["Mk14","DMR full-auto"],["SVDS","Semi-auto Forbidden"],["RPK-16","5.45 pas cher"],["AMB-17","Lockdown budget"]]],
+ ["B",[["M4A1","Moddable, moins de dégâts"],["FAMAS","DPS, chargeur 25"],["MPX + Vulcan","Leg meta"],["AUG","Budget, chargeur court"],["AN-94","AK-12 budget"],["ACE31","Sous-coté"],["AEK","Recul pénible"],["VSS","Buffé, faible portée"],["T191 / T192","U191 compact"],["MCX","Stable"]]],
+ ["C",[["MP5","Budget pur"],["UMP45","Dépassé"],["PP-19","Dépassé"],["Mini14","Semi-auto"],["SKS","Starter"],["Mosin","Starter"],["MDR","Peu joué"]]]
+];
+const weaponKey=n=>{const k=norm(n.split(" ")[0]);return BUILDS.find(b=>norm(b.w).startsWith(k)||k.startsWith(norm(b.w)))?.w};
+$("tierList").innerHTML=TIERS.map(([t,g])=>`
+ <div class="tier"><div class="t t-${t}">${t}</div><div class="guns">${g.map(([n,d])=>{
+   const w=weaponKey(n);
+   return w?`<button class="pill" data-w="${w}"><b>${n}</b><small>${d}</small><span class="has">→ builds</span></button>`
+           :`<div class="pill"><b>${n}</b><small>${d}</small></div>`}).join("")}</div></div>`).join("");
+$("tierList").addEventListener("click",e=>{
+  const p=e.target.closest("button.pill"); if(!p) return;
+  bFilter="all";pressOnly($("buildFilters"),$("buildFilters").querySelector('[data-f="all"]'));
+  bQuery=p.dataset.w;$("buildSearch").value=bQuery;hl=null;renderBuilds();show("builds");scrollTo({top:0});
+});
+
+/* ---------- Perks ---------- */
+const SKILLS={
+ "Focus Puller":"Lean et recentrage plus rapides",
+ "Veteran":"Moins de sway quand tu prends des balles",
+ "Emergency Evasion":"Vitesse en plus après une touche",
+ "Marathon":"Endurance des jambes qui revient plus vite",
+ "Battlefield Healing":"Relève plus vite, plus de PV au relevé",
+ "Stay Alive":"Plus mobile et plus de PV une fois à terre",
+ "Effective Looting":"Chance de sauter la fouille des conteneurs",
+ "Porter":"Charge max augmentée",
+ "Heavy Motor":"Moins de malus de mouvement avec l'armure",
+ "Vinson's Friend I":"Chance de récupérer ton arme si tu meurs",
+ "Vinson's Friend II":"Chance de récupérer ton armure si tu meurs",
+ "Sleight of Hand":"Remplissage des chargeurs plus rapide",
+ "Iron Arm":"Endurance des bras qui revient plus vite",
+ "Fire-Retardant Material":"Réduit les dégâts normaux subis",
+ "Pharmacist":"Médocs et stims durent plus longtemps",
+ "Quick Seal":"Les plaies se referment avec le temps",
+ "Jump Weapon Control":"Arme plus stable en sautant"
+};
+const PRESETS={
+ solo:{
+  aggro:{s:["Focus Puller","Veteran","Emergency Evasion","Marathon"],w:["Focus Puller : tu gagnes les peeks sur les angles.","Veteran : ta visée reste stable quand l'autre tire en premier.","Emergency Evasion : tu sors d'un mauvais échange avant de tomber.","Marathon : tu rotates et reprends position sans être à sec."]},
+  loot:{s:["Effective Looting","Porter","Marathon","Emergency Evasion"],w:["Effective Looting : moins de temps immobile devant les caisses.","Porter : tu ressors plus chargé sans être ralenti.","Marathon : tu traverses la map vite entre deux spots.","Emergency Evasion : tu décroches si on te surprend."]},
+  budget:{s:["Vinson's Friend I","Vinson's Friend II","Veteran","Emergency Evasion"],w:["Vinson's Friend I et II : chance de récupérer arme et armure quand tu meurs, parfait pour enchaîner les kits.","Veteran : tu restes compétitif même avec un kit moyen.","Emergency Evasion : une chance de plus de survivre au premier contact."]}
+ },
+ duo:{
+  aggro:{s:["Focus Puller","Veteran","Battlefield Healing","Emergency Evasion"],w:["Battlefield Healing : relever ton mate vite gagne les fights à 2v2.","Focus Puller et Veteran : les deux perks de duel.","Emergency Evasion : tu te mets à couvert pour attendre le relevé."]},
+  loot:{s:["Battlefield Healing","Effective Looting","Porter","Stay Alive"],w:["Battlefield Healing et Stay Alive : à terre, tu tiens assez longtemps pour être relevé.","Effective Looting et Porter : un looteur pendant que l'autre couvre.","Répartissez les rôles : un des deux peut prendre le preset agressif."]},
+  budget:{s:["Vinson's Friend I","Vinson's Friend II","Battlefield Healing","Veteran"],w:["Vinson's Friend I et II : vous amortissez les pertes de kit.","Battlefield Healing : en duo, un relevé rapide évite de perdre le kit.","Veteran : la stabilité compense le matos moyen."]}
+ }
+};
+let mode="solo",style="aggro";
+const STYLENAME={aggro:"Agressif PvP",loot:"Loot / discret",budget:"Run budget"};
+function renderPerks(){
+  const p=PRESETS[mode][style];
+  $("presetLabel").textContent=(mode==="solo"?"Solo":"Duo")+" · "+STYLENAME[style];
+  $("alloc").innerHTML=p.s.map(n=>`<div class="skill"><b>${n}</b><span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i></span><p>${SKILLS[n]}</p></div>`).join("");
+  $("total").textContent=`${p.s.length*3} / 12 points · ${p.s.length} / 6 compétences`;
+  $("why").innerHTML=p.w.map(x=>`<li>${x}</li>`).join("");
+}
+$("dict").innerHTML=Object.entries(SKILLS).map(([k,v])=>`<div><b>${k}</b> · ${v}</div>`).join("");
+$("modeFilters").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;mode=c.dataset.m;pressOnly($("modeFilters"),c);renderPerks()});
+$("styleFilters").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;style=c.dataset.s;pressOnly($("styleFilters"),c);renderPerks()});
+
+/* ---------- Maps ---------- */
+const MAPS=[
+ {n:"Farm",risk:"mid",rl:"Moyen",modes:"Normal · Lockdown · Forbidden · Infected",stats:[["12","extractions"],["9","clés"],["2","boss"]],
+  spots:[["Motel","Safes, chambres à clé (201, Main Guest Room)",5,"Très disputé"],["Stables","Safe ouvert, caisse d'armes",4,"Boss Ajax possible"],["Grain Trade Center","Munitions, provisions, craft",3,"Pièce fermée au 1er"],["Villa","Caisses, côté nord",3,"Calme en début de raid"]],
+  tip:"<b>Route ouest :</b> Grain Trade → Stables → Motel. Évite de traverser l'autoroute à découvert. Map S tier pour apprendre en solo."},
+ {n:"Valley",risk:"mid",rl:"Moyen",modes:"Normal · Lockdown · Infected (Lockdown)",stats:[["11","extractions"],["10","clés"],["1","boss"]],
+  spots:[["Beach Villa","2 safes + une dizaine de caisses",5,"Hotspot du sud"],["Port","1 safe + caisses dans l'entrepôt",4,"Loot regroupé, rapide"],["Noan Courtyard","Villa sur la colline + camp à l'est",4,"Vue sur une grosse partie de la map"]],
+  tip:"<b>Extract conditionnels :</b> l'hélipad demande un token du boss, l'Abandoned RV une boîte à outils."},
+ {n:"Northridge",risk:"mid",rl:"Moyen",modes:"Normal · Lockdown",stats:[["8","safes à l'hôtel"],["16+","safes au total"]],
+  spots:[["Northridge Hotel","8 safes sur 4 bâtiments",5,"Le plus rentable, très joué"],["Sewage Plant","3 safes, loot industriel",3,"Plus calme, bon en solo"],["Cable Car Station","3 safes",3,"Route nord"],["Camp Services","2 safes",2,"Départ ouest"]],
+  tip:"<b>Spawn SW Camp :</b> fonce sur l'hôtel par le trou du mur du bâtiment B. Spawn Parking : Cable Car puis Communication Station."},
+ {n:"Armory",risk:"hi",rl:"Élevé",modes:"Lockdown · Forbidden",stats:[["5+","extracts courants"]],
+  spots:[["Bunker central","Salles à keycard, safes électroniques",5,"PvP dès le début"],["Complexes extérieurs","Safes, sacs, valises",3,"Moins exposé"]],
+  tip:"<b>Prépare ton extract :</b> B1 Canal (levier), Radar Station Tunnel et Underground Mine dépendent d'interrupteurs. Map CQB : SMG ou AR-57."},
+ {n:"TV Station",risk:"hi",rl:"Élevé",modes:"Lockdown · Forbidden",stats:[["3","extractions"],["17","spawns"]],
+  spots:[["Central Control Room","2 safes, loot élite (RDC)",5,"Rush PvP la 1re minute"],["Director's Office","Top loot (1er étage)",5,"Campé en permanence"],["General Office","Beaucoup de loot, 3 accès",4,"Embuscades fréquentes"]],
+  tip:"<b>Spawn Back Stairwell :</b> départ calme mais pauvre, rotate tout de suite. Map la plus sweaty avec Armory."},
+ {n:"Airport",risk:"hi",rl:"Élevé",modes:"Forbidden · Infected (Heavy) · Zombie Endless",stats:[["Lv.8","Zombie Endless"]],
+  spots:[["Fuel Storage","Électronique, objets de valeur",4,"Bon en Forbidden"],["Exhibition","Objets de valeur",4,"Bon en Forbidden"],["Tour de contrôle","Objectif Infected Zone",3,"Zombies"]],
+  tip:"<b>Saison 7 :</b> les zombies remplacent la plupart des IA en Forbidden Airport. Prends de la munition pas chère pour eux."}
+];
+const imgs={};let riskF="all";
+function renderMaps(){
+  $("mapList").innerHTML=MAPS.map((m,i)=>riskF!=="all"&&m.risk!==riskF?"":`
+   <article class="map">
+     <label class="slot" for="mapimg-${i}">${imgs[i]?`<img src="${imgs[i]}" alt="Carte ${m.n}">`:`<span>Ajoute ta capture<br>de ${m.n}</span>`}<input type="file" id="mapimg-${i}" accept="image/*" data-i="${i}"></label>
+     <div style="min-width:0">
+       <h3>${m.n}<span class="risk ${m.risk}">Risque ${m.rl}</span></h3>
+       <div class="label" style="margin-top:6px">${m.modes}</div>
+       <div class="stats">${m.stats.map(([n,l])=>`<div class="stat"><div class="n">${n}</div><div class="label">${l}</div></div>`).join("")}</div>
+       <div class="tablewrap"><table class="spots"><thead><tr><th>Spot</th><th>Loot</th><th>Valeur</th><th>Note</th></tr></thead><tbody>
+         ${m.spots.map(([s,l,v,n])=>`<tr><td><b>${s}</b></td><td>${l}</td><td><span class="loot" aria-label="${v} sur 5">${[1,2,3,4,5].map(k=>`<i class="${k<=v?"on":""}"></i>`).join("")}</span></td><td>${n}</td></tr>`).join("")}
+       </tbody></table></div>
+       <p class="tip">${m.tip}</p>
+     </div>
+   </article>`).join("");
+}
+$("mapList").addEventListener("change",e=>{
+  const inp=e.target; if(!inp.files||!inp.files[0]) return;
+  const r=new FileReader(); r.onload=()=>{imgs[inp.dataset.i]=r.result;renderMaps()}; r.readAsDataURL(inp.files[0]);
+});
+$("riskFilters").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;riskF=c.dataset.r;pressOnly($("riskFilters"),c);renderMaps()});
+
+/* ---------- Checklists (réglages + pré-raid) ---------- */
+// [titre, valeur conseillée, pourquoi]
+const SETTINGS=[
+ ["Graphismes",[
+  ["Mode d'affichage","Plein écran","Moins d'input lag qu'en fenêtré sans bordure."],
+  ["Champ de vision (FOV)","Haut","Tu vois plus de choses sur les côtés. Baisse un peu si les cibles lointaines te paraissent trop petites."],
+  ["Upscaling","DLSS / FSR Qualité","Gros gain de FPS pour une image presque identique. Évite le mode Performance en 1080p."],
+  ["NVIDIA Reflex","Activé + Boost","Réduit la latence entre ton clic et le tir à l'écran."],
+  ["V-Sync","Off","Ajoute de la latence. Préfère G-Sync / FreeSync + limite de FPS."],
+  ["Limite de FPS","Ta fréquence d'écran","FPS stables = recul plus prévisible. Pas de chute brutale en fight."],
+  ["Flou de mouvement","Off","Rend tout baveux quand tu tournes la caméra."],
+  ["Profondeur de champ & grain","Off","Effets de cinéma qui cachent des détails utiles."],
+  ["Netteté","Un peu plus haut","Aide à repérer les silhouettes de loin, surtout avec le DLSS / FSR."],
+  ["Luminosité","Ajustée à l'intérieur","Règle-la dans un bâtiment sombre : tu dois voir dans les coins sans délaver l'extérieur."],
+  ["Ombres","Moyen","Bon compromis : en tout bas, certaines zones deviennent plus dures à lire."]
+ ]],
+ ["Audio",[
+  ["Casque","Obligatoire","Le son gagne la moitié des fights : pas, rechargements, portes."],
+  ["Musique","Off","Elle couvre les bruits de pas."],
+  ["Mode audio du jeu","Casque","Choisis le profil casque / spatialisation du jeu s'il existe."],
+  ["Son spatial Windows","Off","Ne cumule pas Windows Sonic / Atmos avec la spatialisation du jeu : les directions deviennent floues."],
+  ["Chat vocal","Push-to-talk","Évite d'envoyer ta respiration et ton clavier à tout le lobby."]
+ ]],
+ ["Contrôles",[
+  ["Sensibilité","30 à 45 cm / 360°","Repère classique pour un jeu tactique. Si tu viens de CS2 ou Valorant, vise une sensi proche de la tienne."],
+  ["Sensibilité en visée","À tester sur cible","Règle-la au stand de tir : le recul doit se contrôler sans forcer."],
+  ["Lean (Q / E)","Maintien ou bascule","Choisis une fois pour toutes et ne change plus. Le lean gagne les angles."],
+  ["Regard libre (Alt)","Bindé","Regarder autour en courant sans changer de direction."],
+  ["Soins rapides","Raccourcis assignés","Bandage, trousse et antidouleur en raccourci : te soigner par l'inventaire en fight, c'est mourir."],
+  ["Mode de tir","Touche connue","Beaucoup d'armes ramassées sont en semi-auto : vérifie dès que tu changes d'arme."],
+  ["Vérifier le chargeur","Touche connue","Tu sais combien il te reste avant de peek."]
+ ]],
+ ["PC & pilotes",[
+  ["Pilote GPU","À jour","Les patchs d'ABI s'accompagnent souvent d'optimisations pilote."],
+  ["Mode jeu Windows","Activé","Priorité au jeu sur les tâches de fond."],
+  ["Planification GPU accélérée","Activée","Petit gain de latence sur les cartes récentes."],
+  ["Plan d'alimentation","Performances élevées","Évite que le CPU baisse sa fréquence en plein raid."],
+  ["Overlays","Off (sauf utiles)","Discord, GeForce, Xbox Game Bar : chacun peut coûter des FPS ou causer des saccades."],
+  ["Vibrance numérique","60 à 70 %","Panneau NVIDIA / AMD : couleurs plus vives, ennemis plus visibles dans l'herbe."],
+  ["Fréquence de l'écran","Bien réglée","Vérifie dans Windows que ton 144 / 240 Hz n'est pas resté à 60 Hz."]
+ ]]
+];
+const RAID=[
+ ["Équipement",[
+  ["Arme + munitions qui percent","Regarde l'onglet Armure : niveau de munition ≥ armure attendue."],
+  ["Chargeurs pleins","Remplis-les avant le raid, pas sous le feu."],
+  ["Armure et casque réparés","Une armure à moitié usée protège beaucoup moins."],
+  ["Kit assuré","L'assurance te rend une partie du matos si personne ne le garde."]
+ ]],
+ ["Soins",[
+  ["Bandages","Contre les saignements."],
+  ["Trousse de soins","Pour remonter les PV."],
+  ["Attelle","Une jambe cassée = tu ne cours plus."],
+  ["Antidouleur","Pour courir malgré les blessures."],
+  ["Eau et nourriture","Les longs raids vident ta jauge."]
+ ]],
+ ["Plan",[
+  ["Map et spawn regardés","Ouvre la carte dès le spawn."],
+  ["2 extractions repérées","Une principale, une de secours."],
+  ["Clés utiles prises","Et seulement celles de la map."],
+  ["Conteneur sécurisé vidé","Garde de la place pour le meilleur loot."],
+  ["Objectif de raid","Quête, spot précis ou PvP : choisis avant de partir."]
+ ]]
+];
+function checklist({data,key,list,bar,count,reset,flat}){
+  const total=data.reduce((n,[,items])=>n+items.length,0);
+  let done=new Set(store.get(key,[]));
+  function render(){
+    $(list).innerHTML=data.map(([title,items])=>`<div class="panel"><h3>${title}</h3>${items.map(it=>{
+      const id=title+"/"+it[0];
+      return `<label class="check"><input type="checkbox" data-id="${id}" ${done.has(id)?"checked":""}><span><b>${it[0]}</b>${flat?"":`<span class="val">${it[1]}</span>`}</span><small>${flat?it[1]:it[2]}</small></label>`}).join("")}</div>`).join("");
+    upd();
+  }
+  function upd(){
+    const n=[...done].length;
+    $(bar).style.width=(n/total*100)+"%";
+    $(count).textContent=n===total?`${n} / ${total} · prêt !`:`${n} / ${total}`;
+  }
+  $(list).addEventListener("change",e=>{
+    const id=e.target.dataset.id; if(!id) return;
+    e.target.checked?done.add(id):done.delete(id); store.set(key,[...done]); upd();
+  });
+  $(reset).addEventListener("click",()=>{done=new Set();store.set(key,[]);render()});
+  render();
+}
+checklist({data:SETTINGS,key:"settings",list:"settingsList",bar:"setBar",count:"setCount",reset:"setReset"});
+checklist({data:RAID,key:"raid",list:"raidList",bar:"raidBar",count:"raidCount",reset:"raidReset",flat:true});
+
+/* ---------- Tips ---------- */
+const TIPCATS={start:"Débuter",fight:"Combat",survive:"Survie",loot:"Loot & argent",extract:"Extraction"};
+const TIPS=[
+ ["start","Commence en Normal sur Farm","Map lisible, beaucoup d'extractions, loot correct. Idéal pour apprendre sans perdre de gros kits."],
+ ["start","Joue des kits que tu peux perdre","Ne sors jamais avec un kit que tu ne peux pas racheter 3 fois. La peur de perdre te fait mal jouer."],
+ ["start","Fais tes quêtes","Elles donnent de l'argent, de l'XP et débloquent des objets chez les marchands. Prends celles de la map que tu joues."],
+ ["start","Le stand de tir avant le raid","Deux minutes à tester le recul de ton build évitent de le découvrir en plein fight."],
+ ["fight","Écoute avant de bouger","Arrête-toi quelques secondes à l'entrée d'une zone. Celui qui entend en premier tire en premier."],
+ ["fight","Marche, ne cours pas","Courir s'entend de loin. Approche en marchant des zones chaudes et des bâtiments."],
+ ["fight","Lean sur chaque angle","Tu montres moins de ton corps que l'ennemi qui sort en entier."],
+ ["fight","Bouge après un kill","Ton tir a été entendu. Recharge à couvert, change d'angle, puis loot."],
+ ["fight","Vise selon ta munition","Si ta munition ne perce pas son armure, vise les jambes ou les bras. Voir l'onglet Armure."],
+ ["fight","Rafales courtes à distance","Au-delà de 50 m, 3 à 5 balles puis reprends ta visée. Le spray, c'est pour le corps à corps."],
+ ["survive","Soigne-toi à couvert","Jamais en plein milieu d'un échange. Casse la ligne de vue d'abord."],
+ ["survive","Saignement d'abord","Bandage avant la trousse : un saignement vide tes PV plus vite que tu ne les remontes."],
+ ["survive","Surveille l'eau et la faim","À zéro, tu perds de la vie et de l'endurance. Une boisson suffit souvent."],
+ ["survive","Le son des pas compte","Si tu entends des pas lourds rapides, quelqu'un te cherche. Prends un angle et attends."],
+ ["loot","Pense valeur par case","Un petit objet cher vaut mieux qu'un gros objet moyen. Utilise la calculette plus bas."],
+ ["loot","Le conteneur sécurisé","Ce qu'il contient reste à toi même si tu meurs. Mets-y les petits objets précieux au fur et à mesure."],
+ ["loot","Vérifie le marché avant de vendre","Le prix au marché peut être bien au-dessus du prix marchand. Et inversement après un patch."],
+ ["loot","Ne fouille pas tout","Vise les spots connus (safes, armes, électronique). Fouiller chaque tiroir te rend prévisible."],
+ ["extract","Regarde tes extractions au spawn","Elles changent selon ton point d'apparition. Certaines ont des conditions (clé, objet, levier)."],
+ ["extract","Pars avant la fin du timer","Les dernières minutes, les extractions sont souvent campées. Et un timer à zéro = tout perdu."],
+ ["extract","Approche l'extract avec prudence","C'est l'endroit où les campeurs attendent les joueurs chargés. Écoute, puis traverse vite."],
+ ["extract","Extraire, c'est gagner","Un raid moyen extrait vaut mieux qu'un gros loot perdu. Ne tente pas un fight de plus quand ton sac est plein."]
+];
+let tipCat="all",tipIdx=Math.floor(Math.random()*TIPS.length);
+$("tipFilters").innerHTML=`<button class="chip" aria-pressed="true" data-c="all">Tout</button>`+Object.entries(TIPCATS).map(([k,v])=>`<button class="chip" aria-pressed="false" data-c="${k}">${v}</button>`).join("");
+function renderTips(){
+  $("tipList").innerHTML=TIPS.filter(t=>tipCat==="all"||t[0]===tipCat).map(([c,h,p])=>`<div class="tipcard"><span class="label">${TIPCATS[c]}</span><b>${h}</b><p>${p}</p></div>`).join("");
+}
+function showTip(){const t=TIPS[tipIdx];$("tipOfDay").innerHTML=`<b>${t[1]}.</b> ${t[2]}`}
+$("tipFilters").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;tipCat=c.dataset.c;pressOnly($("tipFilters"),c);renderTips()});
+$("tipNext").addEventListener("click",()=>{tipIdx=(tipIdx+1+Math.floor(Math.random()*(TIPS.length-1)))%TIPS.length;showTip()});
+renderTips();showTip();
+
+function calc(){
+  const p=+$("cPrice").value||0,w=Math.max(1,+$("cW").value||1),h=Math.max(1,+$("cH").value||1),min=+$("cMin").value||0;
+  const per=p/(w*h);
+  $("cOut").textContent=`${per.toLocaleString("fr-FR",{maximumFractionDigits:1})}k / case`;
+  $("cVerdict").textContent=`${w*h} case${w*h>1?"s":""} · `+(per>=min*2?"À prendre sans hésiter.":per>=min?"Ça vaut la place.":"Laisse-le si ton sac est presque plein.");
+}
+["cPrice","cW","cH","cMin"].forEach(id=>$(id).addEventListener("input",calc));calc();
+
+const GLOSS={
+ "Raid":"Une partie : tu entres, tu loot, tu extrais (ou pas).",
+ "Extract":"Point de sortie. Seul moyen de garder ce que tu portes.",
+ "Kit":"Tout ton équipement : arme, armure, casque, sac, gilet.",
+ "Naked / à poil":"Partir sans équipement de valeur, pour loot sans risque.",
+ "Rat":"Joueur discret qui évite les fights et loot en silence.",
+ "Chad":"Joueur en gros kit qui cherche le PvP.",
+ "Peek":"Sortir d'un angle pour regarder ou tirer.",
+ "Pen":"Pénétration : la capacité d'une balle à traverser l'armure.",
+ "Ergo":"Ergonomie : vitesse de visée et stabilité en tenant l'arme.",
+ "Zero recoil":"Build où le recul est presque nul grâce aux pièces.",
+ "Leg meta":"Viser les jambes quand ta munition ne perce pas le torse.",
+ "Lockdown":"Mode intermédiaire, plus de loot et plus de risque que Normal.",
+ "Forbidden":"Mode le plus dur : meilleur loot, kits lourds, IA plus fortes.",
+ "Safe":"Coffre fort sur la map, souvent du loot de valeur.",
+ "Conteneur sécurisé":"Espace que tu gardes même en cas de mort.",
+ "Boss":"IA forte avec escorte et loot spécial."
+};
+$("gloss").innerHTML=Object.entries(GLOSS).map(([k,v])=>`<div><b>${k}</b> · ${v}</div>`).join("");
+
+/* ---------- Armure ---------- */
+(function(){
+  let h=`<thead><tr><th>Munition ↓ / Armure →</th>${[1,2,3,4,5,6].map(a=>`<th>Classe ${a}</th>`).join("")}</tr></thead><tbody>`;
+  for(let m=1;m<=6;m++){
+    h+=`<tr><th>Niveau ${m}</th>`;
+    for(let a=1;a<=6;a++){const c=m>a?"m-y":m===a?"m-p":"m-n";const s=m>a?"✓":m===a?"~":"✕";h+=`<td class="${c}" aria-label="${c==="m-y"?"traverse":c==="m-p"?"parfois":"bloquée"}">${s}</td>`}
+    h+="</tr>";
+  }
+  $("matrix").innerHTML=h+"</tbody>";
+  const Z=[["Tête","Le plus mortel, mais le casque bloque souvent. Avec une munition qui perce, c'est la fin du fight."],["Thorax","Zone vitale protégée par l'armure. À viser si ta munition la perce."],["Ventre","Souvent couvert aussi. Dégâts forts."],["Jambes","Jamais protégées. La solution quand ta munition ne perce pas : « leg meta »."],["Bras","Non protégés, mais moins de dégâts. Gêne la visée de l'ennemi."]];
+  $("zones").innerHTML=Z.map(([z,d])=>`<div class="zone"><b>${z}</b><span>${d}</span></div>`).join("");
+  $("armorRules").innerHTML=["La durabilité compte : une armure abîmée laisse passer plus de balles.","Paye la munition avant l'arme : une arme moyenne avec une bonne munition bat une arme chère avec de la munition basse.","En Normal (≤ T4), une munition niveau 4 suffit souvent. En Lockdown, vise niveau 5.","Garde de la munition basse dans un chargeur à part pour les IA et les zombies : pas besoin de gâcher la bonne.","Un casque haut niveau change tout face aux snipers : le M24 et le SJ16 one-tap les casques faibles."].map(x=>`<li>${x}</li>`).join("");
+})();
+
+/* ---------- Onglets ---------- */
+const TABS=[...document.querySelectorAll("nav.tabs button")].map(b=>b.dataset.tab);
+document.querySelector("nav.tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return; show(b.dataset.tab); b.scrollIntoView({block:"nearest",inline:"nearest"});
+});
+function show(id){
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",x.dataset.tab===id));
+  document.querySelectorAll("section[role=tabpanel]").forEach(s=>s.hidden=s.id!==id);
+  store.set("tab",id);
+  try{history.replaceState(null,"","#"+id)}catch(_){}
+}
+renderBuilds();renderPerks();renderMaps();
+const h0=location.hash.slice(1);
+let start=TABS.includes(h0)?h0:store.get("tab",null);
+if(start&&TABS.includes(start)&&start!=="builds") show(start);
+</script>
+</body>
+</html>
