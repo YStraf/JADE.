@@ -227,7 +227,9 @@ footer a{color:var(--muted)}
     </div>
     <div class="sumbar">
       <span class="label" id="ldLabel"></span>
+      <button class="btn" id="ldRoll" type="button">Roulette</button>
       <button class="btn" id="ldNext" type="button">Autre arme</button>
+      <button class="btn" id="ldLink" type="button">Lien</button>
       <button class="btn solid" id="ldCopy" type="button">Copier le stuff</button>
     </div>
     <div class="loadout">
@@ -780,6 +782,22 @@ $("picker").addEventListener("click",e=>{
   ld[c.closest(".filters").dataset.k]=c.dataset.v; ldAlt=0; store.set("loadout",ld); renderLoadout();
 });
 $("ldNext").addEventListener("click",()=>{ldAlt++;renderLoadout()});
+const LDKEYS={mode:["normal","lockdown","forbidden"],team:["solo","duo"],style:["aggro","zero","dmg","sniper","eq"],range:["short","shortmid","mid","long"],budget:["200","300","400","500","650","9999"]};
+$("ldRoll").addEventListener("click",()=>{
+  for(const k in LDKEYS) ld[k]=LDKEYS[k][Math.floor(Math.random()*LDKEYS[k].length)];
+  ldAlt=0;store.set("loadout",ld);renderLoadout();
+});
+const ldHash=()=>"#stuff?"+Object.keys(LDKEYS).map(k=>k[0]+"="+ld[k]).join("&")+(ldAlt?"&a="+ldAlt:"");
+$("ldLink").addEventListener("click",e=>{
+  try{history.replaceState(null,"",ldHash())}catch(_){}
+  copyText(e.currentTarget,location.href.split("#")[0]+ldHash(),"Lien");
+});
+(function(){ // stuff partagé par lien : #stuff?m=forbidden&t=duo&s=sniper&r=long&b=9999
+  const q=location.hash.split("?")[1]; if(!q) return;
+  const P=new URLSearchParams(q);
+  for(const k in LDKEYS){const v=P.get(k[0]);if(LDKEYS[k].includes(v)) ld[k]=v}
+  ldAlt=Math.max(0,parseInt(P.get("a"))||0);
+})();
 $("ldCopy").addEventListener("click",e=>copyText(e.currentTarget,ldText,"Copier le stuff"));
 
 /* ---------- Réglages ---------- */
@@ -848,7 +866,7 @@ function show(id){
   try{history.replaceState(null,"","#"+id)}catch(_){}
 }
 renderBuilds();renderPerks();renderMaps();renderLoadout();
-const h0=location.hash.slice(1);
+const h0=location.hash.slice(1).split("?")[0];
 let start=TABS.includes(h0)?h0:store.get("tab",null);
 if(start&&TABS.includes(start)&&start!=="stuff") show(start);
 </script>
